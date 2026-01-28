@@ -23,6 +23,13 @@
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
+        <!-- Specialite -->
+        <div>
+            <x-input-label for="specialite" :value="__('Specialite')" />
+            <x-text-input id="specialite" class="block mt-1 w-full" type="text" name="specialite" :value="old('specialite')" required autofocus autocomplete="specialite" />
+            <x-input-error :messages="$errors->get('specialite')" class="mt-2" />
+        </div>
+
         <!-- Photo -->
         <div>
             <x-input-label for="photo" :value="__('Photo')" />
