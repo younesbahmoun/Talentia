@@ -16,6 +16,27 @@
             <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
         </div>
 
+        <!-- Role -->
+        <div>
+            <x-input-label for="role" :value="__('Role')" />
+            <x-text-input id="role" class="block mt-1 w-full" type="text" name="role" :value="old('role')" required autofocus autocomplete="role" />
+            <x-input-error :messages="$errors->get('role')" class="mt-2" />
+        </div>
+
+        <!-- Photo -->
+        <div>
+            <x-input-label for="photo" :value="__('Photo')" />
+            <x-text-input id="photo" class="block mt-1 w-full" type="text" name="photo" :value="old('photo')" required autofocus autocomplete="photo" />
+            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
+        </div>
+
+        <!-- Bio -->
+        <div>
+            <x-input-label for="bio" :value="__('Bio')" />
+            <x-text-input id="bio" class="block mt-1 w-full" type="text" name="bio" :value="old('bio')" required autofocus autocomplete="bio" />
+            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
+        </div>
+
         <!-- Email Address -->
         <div class="mt-4">
             <x-input-label for="email" :value="__('Email')" />
