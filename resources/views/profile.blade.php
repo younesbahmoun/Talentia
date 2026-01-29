@@ -17,7 +17,7 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4">Mon Profil</h2>
-                        <img src="{{ Auth::user()->photo }}" alt="Photo profil de {{ Auth::user()->name }} {{ Auth::user()->prenom }}" class="img-fluid rounded-circle mb-3 d-block mx-auto" width="150" height="150">
+                        <img src="{{ $user->photo }}" alt="Photo profil de {{ $user->name }} {{ $user->prenom }}" class="img-fluid rounded-circle mb-3 d-block mx-auto" width="150" height="150">
                         
                         <!-- Photo de profil -->
                         <!-- <div class="text-center mb-4">
@@ -32,25 +32,25 @@
                             <!-- Nom -->
                             <div class="mb-3">
                                 <label for="nom" class="form-label">Nom</label>
-                                <input type="text" class="form-control" id="nom" value="{{ Auth::user()->name }}">
+                                <input type="text" class="form-control" id="nom" value="{{ $user->name }}">
                             </div>
 
                             <!-- Spécialité / Entreprise -->
                             <div class="mb-3">
                                 <label for="specialite" class="form-label">Spécialité / Entreprise</label>
-                                <input type="text" class="form-control" id="specialite" value="{{ Auth::user()->specialite }}">
+                                <input type="text" class="form-control" id="specialite" value="{{ $user->specialite }}">
                             </div>
 
                             <!-- Bio -->
                             <div class="mb-3">
                                 <label for="bio" class="form-label">Bio</label>
-                                <textarea class="form-control" id="bio" rows="4">{{ Auth::user()->photo }}</textarea>
+                                <textarea class="form-control" id="bio" rows="4">{{ $user->photo }}</textarea>
                             </div>
 
                             <!-- Photo de profil -->
                             <div class="mb-3">
                                 <label for="nom" class="form-label">Photo</label>
-                                <input type="text" class="form-control" id="nom" value="{{ Auth::user()->photo }}">
+                                <input type="text" class="form-control" id="nom" value="{{ $user->photo }}">
                             </div>
 
                             <!-- Bouton de sauvegarde -->
