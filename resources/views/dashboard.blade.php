@@ -1,9 +1,8 @@
 <?php
 // echo "<pre>";
-// print_r(Auth::user());
+// print_r($user);
 // echo "</pre>";
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -17,7 +16,7 @@
 
     <!-- Main Content -->
     <div class="container mt-4">
-        <h1>Welcome to Your Dashboard</h1>
+        <h1> Welcome, {{ Auth::user()->name }} {{ Auth::user()->prenom }}</h1>
         <p>This is a simple Bootstrap navigation template.</p>
     </div>
 

@@ -31,25 +31,25 @@
                             <!-- Nom -->
                             <div class="mb-3">
                                 <label for="nom" class="form-label">Nom</label>
-                                <input type="text" class="form-control" id="nom" placeholder="Entrez votre nom">
+                                <input type="text" class="form-control" id="nom" value="{{ Auth::user()->name }}">
                             </div>
 
                             <!-- Spécialité / Entreprise -->
                             <div class="mb-3">
                                 <label for="specialite" class="form-label">Spécialité / Entreprise</label>
-                                <input type="text" class="form-control" id="specialite" placeholder="Ex: Développeur Web / Google">
+                                <input type="text" class="form-control" id="specialite" value="{{ Auth::user()->specialite }}">
                             </div>
 
                             <!-- Bio -->
                             <div class="mb-3">
                                 <label for="bio" class="form-label">Bio</label>
-                                <textarea class="form-control" id="bio" rows="4" placeholder="Parlez-nous de vous..."></textarea>
+                                <textarea class="form-control" id="bio" rows="4">{{ Auth::user()->photo }}</textarea>
                             </div>
 
                             <!-- Photo de profil -->
                             <div class="mb-3">
                                 <label for="nom" class="form-label">Photo</label>
-                                <input type="text" class="form-control" id="nom" placeholder="Entrez votre nom">
+                                <input type="text" class="form-control" id="nom" value="{{ Auth::user()->photo }}">
                             </div>
 
                             <!-- Bouton de sauvegarde -->
