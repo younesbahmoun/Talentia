@@ -17,6 +17,7 @@
                 <div class="card shadow">
                     <div class="card-body">
                         <h2 class="card-title text-center mb-4">Mon Profil</h2>
+                        <img src="{{ Auth::user()->photo }}" alt="Photo profil de {{ Auth::user()->name }} {{ Auth::user()->prenom }}" class="img-fluid rounded-circle mb-3 d-block mx-auto" width="150" height="150">
                         
                         <!-- Photo de profil -->
                         <!-- <div class="text-center mb-4">
