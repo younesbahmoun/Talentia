@@ -9,7 +9,7 @@
 <body>
     <!-- @php $currentPage = 'profile'; @endphp -->
     @include('components.navbar')
-
+    <h1>Modifier le profil</h1>
     <!-- Profile Section -->
     <div class="container mt-5">
         <div class="row justify-content-center">
@@ -28,7 +28,7 @@
                         </div> -->
 
                         <!-- Formulaire de profil -->
-                        <form>
+                        <form action="{{ route('profile.show') }}" method="POST">
                             <!-- Nom -->
                             <div class="mb-3">
                                 <label for="nom" class="form-label">Nom</label>
@@ -55,6 +55,7 @@
 
                             <!-- Bouton de sauvegarde -->
                             <div class="d-grid gap-2">
+                                <a href="{{ route('profile.show') }}" class="btn btn-primary">Retour au profil</a>
                                 <button type="submit" class="btn btn-primary">Enregistrer les modifications</button>
                             </div>
                         </form>
