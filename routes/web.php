@@ -10,9 +10,11 @@ Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
 Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 // profile
-Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
-Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
-Route::post('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
+Route::middleware('auth')->group(function () {
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::post('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
+});
 
 // Route::get('/', function () {
 //     $user = Auth::user();
