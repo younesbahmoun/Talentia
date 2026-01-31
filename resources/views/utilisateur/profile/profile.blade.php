@@ -9,11 +9,9 @@
             <div class="col-md-8 mx-auto">
                 <div class="card">
                     <div class="card-body">
-                        @if(session('success'))
-                            <div class="alert alert-success">
-                                {{ session('success') }}
-                            </div>
-                        @endif
+                        @unless(!session('text'))
+                            <x-alert :text="session('text')" :type="session('type')"/>
+                        @endunless
                         <!-- Photo & Name -->
                         <div class="d-flex align-items-center mb-4">
                             <img src="{{ $user->photo ?? 'https://ui-avatars.com/api/?name=' . urlencode($user->name . ' ' . $user->prenom) . '&background=0D8ABC&color=fff&size=80' }}" 
