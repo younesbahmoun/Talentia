@@ -1,9 +1,4 @@
-@extends('layouts.master')
-@section('title', 'Utilisateur Dashboard')
-@section('nav')
-    @include('components.navbar')
-@endsection
-@section('content')
+<x-master title="Utilisateur Dashboard">
     <div class="container mt-4">
         @if(session('success'))
             <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -24,4 +19,7 @@
         <h1> Welcome, {{ Auth::user()->name }} {{ Auth::user()->prenom }}</h1>
         <p>This is a simple Bootstrap navigation template.</p>
     </div>
-@endsection
+    @section('footer')
+        @include('components.footer')
+    @endsection
+</x-master>
