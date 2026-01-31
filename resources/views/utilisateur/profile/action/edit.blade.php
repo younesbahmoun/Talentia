@@ -1,9 +1,4 @@
-@extends('layouts.master')
-@section('title', 'Modifier le Profil Utilisateur')
-@section('nav')
-    @include('components.navbar')
-@endsection
-@section('content')
+<x-master title='Modifier le Profil Utilisateur'>
     <!-- Profile Section -->
     <div class="container mt-5">
         <h1>Modifier le profil</h1>
@@ -59,4 +54,7 @@
             </div>
         </div>
     </div>
-@endsection
+    @section('footer')
+        @include('components.footer')
+    @endsection
+</x-master>
