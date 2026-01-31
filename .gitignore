@@ -3,6 +3,8 @@
 .env
 .env.backup
 .env.production
+.env.local
+.env.*.local
 .phpactor.json
 .phpunit.result.cache
 /.fleet
@@ -22,3 +24,26 @@
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# IDE & Editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+.env.*.swp
+
+# Breeze generated files
+/resources/views/components
+/resources/views/layouts/app.blade.php
+/resources/views/layouts/guest.blade.php
+/resources/views/layouts/navigation.blade.php
+/resources/views/auth
+
+# Laravel
+/bootstrap/cache/
+/storage/logs/
+/storage/debugbar/
