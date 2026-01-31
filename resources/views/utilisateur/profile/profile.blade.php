@@ -10,7 +10,9 @@
                 <div class="card">
                     <div class="card-body">
                         @unless(!session('text'))
-                            <x-alert :text="session('text')" :type="session('type')"/>
+                            <x-alert :type="session('type')">
+                                <p>{{ session('text') }}</p>
+                            </x-alert>
                         @endunless
                         <!-- Photo & Name -->
                         <div class="d-flex align-items-center mb-4">
