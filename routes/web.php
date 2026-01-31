@@ -16,6 +16,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
 });
 
+Route::get('/home', function(Request $request) {
+    $languages = ['PHP', 'JavaScript', 'Python', 'Java', 'C#'];
+    // $name = "Younes";
+    $name = null;
+    // $languages = [];
+    return view('home', compact('languages', 'name'));
+})->name('home');
+
 // Route::get('/', function () {
 //     $user = Auth::user();
 //     return view('dashboard', [
@@ -45,7 +53,7 @@ Route::middleware('auth')->group(function () {
 
 Route::get('/dashboard', function () {
     $user = Auth::user();
-    return view('dashboard', [
+    return view('utilisateur/dashboard', [
         'currentPage' => 'dashboard',
         'users' => $user,
     ]);
