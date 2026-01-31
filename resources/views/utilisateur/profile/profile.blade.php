@@ -1,13 +1,9 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('layouts.master')
+@section('title', 'Profil Utilisateur')
+@section('nav')
     @include('components.navbar')
+@endsection
+@section('content')
     <div class="container mt-5">
         <div class="row">
             <div class="col-md-8 mx-auto">
@@ -56,5 +52,4 @@
             </div>
         </div>
     </div>
-</body>
-</html>
+@endsection

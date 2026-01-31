@@ -14,16 +14,15 @@ class ProfileController extends Controller
     //     return view('profile', compact('user'));
     // }
 
-     public function show()
-    {
+     public function show() {
         $user = Auth::user();
-        return view('profile/profile', compact('user'));
+        return view('utilisateur/profile/profile', compact('user'));
     }
 
     public function edit()
     {
         $user = Auth::user();
-        return view('profile/action/edit', compact('user'));
+        return view('utilisateur/profile/action/edit', compact('user'));
     }
 
     public function update (Request $request) {
