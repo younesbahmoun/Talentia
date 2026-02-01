@@ -48,4 +48,9 @@ class ProfileController extends Controller
         return redirect()->route('profile.show')->with('text', 'Profile updated successfully!')
             ->with('type', 'success');
     }
+
+    public function allProfiles () {
+        $profiles = User::all();
+        return view('utilisateur/profile/all', compact('profiles'));
+    }
 }
