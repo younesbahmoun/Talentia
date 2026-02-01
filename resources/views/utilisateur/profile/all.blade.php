@@ -48,7 +48,7 @@
                             <option>Marketing</option>
                         </select>
                     </div>
-                    <span class="badge bg-info fs-6">12 Profiles</span>
+                    <span class="badge bg-info fs-6">{{ $profiles->total() }} Profiles</span>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
                             
                             <!-- Actions -->
                             <div class="d-flex justify-content-center gap-2">
-                                <a href="{{ route('profile.show') }}">
+                                <a href="{{ route('profile.detail', $profile->id) }}">
                                     <button class="btn btn-primary btn-sm">
                                         <i class="bi bi-eye"></i> View Profile
                                     </button>
