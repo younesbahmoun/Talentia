@@ -61,7 +61,15 @@ class ProfileController extends Controller
 
     public function showDetails (Request $request) {
         $id = (int)$request->id;
-        $profile = User::find($id);
-        dd($profile);
+        $user = User::findOrFail($id);
+        // $profile = User::find($id);
+        // if ($profile === null) {
+        //     // return redirect()->route('profiles.all')->with('text', 'Profile not found.')
+        //     //     ->with('type', 'danger');  
+        //     return abort(404); 
+        // }
+        // dd($user);
+        // return view('utilisateur/profile/detail-profile', compact('user'));
+        return view('utilisateur/profile/detail-profile', compact('user'));
     }
 }
