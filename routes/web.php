@@ -75,7 +75,7 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 
 Route::get('/profiles', [ProfileController::class, 'allProfiles'])->name('profiles.all')->middleware(['auth', 'verified']);
 Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
-
+->where('id', '\d+')
 ->name('profile.details')
 ->middleware(['auth', 'verified']);
 
