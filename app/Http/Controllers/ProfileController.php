@@ -50,7 +50,9 @@ class ProfileController extends Controller
     }
 
     public function allProfiles () {
-        $profiles = User::all();
+        $profiles = User::paginate(10);
         return view('utilisateur/profile/all', compact('profiles'));
     }
+
+
 }

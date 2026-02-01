@@ -80,14 +80,16 @@
                             
                             <!-- Bio -->
                             @unless(!$profile->prenom)
-                            <p class="card-text text-muted mb-4">{{ $profile->bio }}</p>
+                            <p class="card-text text-muted mb-4">{{ Str::limit($profile->bio, 30) }}</p>
                             @endunless
                             
                             <!-- Actions -->
                             <div class="d-flex justify-content-center gap-2">
-                                <button class="btn btn-primary btn-sm">
-                                    <i class="bi bi-eye"></i> View Profile
-                                </button>
+                                <a href="{{ route('profile.show') }}">
+                                    <button class="btn btn-primary btn-sm">
+                                        <i class="bi bi-eye"></i> View Profile
+                                    </button>
+                                </a>
                                 <button class="btn btn-outline-primary btn-sm">
                                     <i class="bi bi-person-plus me-1"></i> Connect
                                 </button>
@@ -97,6 +99,8 @@
                 </div>
             @endforeach
         </div>
+
+        {{ $profiles->links() }}
 
         <!-- Pagination -->
         <div class="d-flex justify-content-center mt-5">
@@ -125,25 +129,25 @@
     @section('scripts')
         <script>
             // Simple example JavaScript for interactivity
-            document.addEventListener('DOMContentLoaded', function() {
-                // Add click event to all "View Profile" buttons
-                document.querySelectorAll('.btn-primary').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const card = this.closest('.card');
-                        const name = card.querySelector('.card-title').textContent;
-                        alert(`Viewing profile of: ${name}`);
-                    });
-                });
+            // document.addEventListener('DOMContentLoaded', function() {
+            //     // Add click event to all "View Profile" buttons
+            //     document.querySelectorAll('.btn-primary').forEach(button => {
+            //         button.addEventListener('click', function() {
+            //             const card = this.closest('.card');
+            //             const name = card.querySelector('.card-title').textContent;
+            //             alert(`Viewing profile of: ${name}`);
+            //         });
+            //     });
                 
-                // Add click event to all "Message" buttons
-                document.querySelectorAll('.btn-outline-secondary').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const card = this.closest('.card');
-                        const name = card.querySelector('.card-title').textContent;
-                        alert(`Opening chat with: ${name}`);
-                    });
-                });
-            });
+            //     // Add click event to all "Message" buttons
+            //     document.querySelectorAll('.btn-outline-secondary').forEach(button => {
+            //         button.addEventListener('click', function() {
+            //             const card = this.closest('.card');
+            //             const name = card.querySelector('.card-title').textContent;
+            //             alert(`Opening chat with: ${name}`);
+            //         });
+            //     });
+            // });
         </script>
     @endsection
     @section('footer')
