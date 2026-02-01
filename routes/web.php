@@ -74,5 +74,9 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 // })
 
 Route::get('/profiles', [ProfileController::class, 'allProfiles'])->name('profiles.all')->middleware(['auth', 'verified']);
+Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
+
+->name('profile.details')
+->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
