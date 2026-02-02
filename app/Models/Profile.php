@@ -26,6 +26,6 @@ class Profile extends Model
      */
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id'); // Use user_id consistently
+        return $this->belongsTo(User::class, 'user_id');
     }
 }
