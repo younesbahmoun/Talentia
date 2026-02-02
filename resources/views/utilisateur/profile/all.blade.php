@@ -31,6 +31,8 @@
 
     <!-- Main Content -->
     <div class="container my-5">
+        <h1>{{ $search }}</h1>
+
         <!-- Header -->
         <div class="row mb-4">
             <div class="col-12">
@@ -39,15 +41,17 @@
                 </h1>
                 <p class="text-muted">Browse through our community members and their specializations</p>
                 <div class="d-flex justify-content-between align-items-center">
-                    <div class="d-flex gap-2">
-                        <input type="text" class="form-control" placeholder="Search by name..." style="max-width: 300px;">
-                        <select class="form-select" style="max-width: 200px;">
-                            <option>All Specialities</option>
-                            <option>Web Development</option>
-                            <option>Design</option>
-                            <option>Marketing</option>
+                    <form method="GET" action="{{ route('profiles.all') }}" class="d-flex gap-2">
+                        <input type="text" name="nom" class="form-control" placeholder="Search by name..." 
+                               value="{{ request('nom') }}" style="max-width: 300px;">
+                        <select name="specialite" class="form-select" style="max-width: 200px;">
+                            <option value="all">All Specialities</option>
+                            
                         </select>
-                    </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-search"></i> Search
+                        </button>
+                    </form>
                     <span class="badge bg-info fs-6">{{ $profiles->total() }} Profiles</span>
                 </div>
             </div>
@@ -101,27 +105,6 @@
         </div>
 
         {{ $profiles->links() }}
-
-        <!-- Pagination -->
-        <div class="d-flex justify-content-center mt-5">
-            <nav>
-                <ul class="pagination">
-                    <li class="page-item disabled">
-                        <a class="page-link" href="#" tabindex="-1">
-                            <i class="bi bi-chevron-left"></i>
-                        </a>
-                    </li>
-                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
-                    <li class="page-item"><a class="page-link" href="#">2</a></li>
-                    <li class="page-item"><a class="page-link" href="#">3</a></li>
-                    <li class="page-item">
-                        <a class="page-link" href="#">
-                            <i class="bi bi-chevron-right"></i>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </div>
     </div>
     @section('footer')
         @include('components.footer')

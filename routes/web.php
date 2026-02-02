@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\SearchController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -13,7 +12,7 @@ Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destro
 
 // profile
 Route::middleware('auth')->group(function () {
-    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile', [UserController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/edit', [ProfileController::class, 'update'])->name('profile.update');
 });
@@ -61,9 +60,6 @@ Route::get('/dashboard', function () {
     ]);
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-// Recherche d'utilisateurs
-Route::get('/recherche', [SearchController::class, 'index'])->name('recherche.index')->middleware(['auth', 'verified']);
-
 // Profil public d'un utilisateur
 Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')->middleware(['auth', 'verified']);
 
@@ -74,6 +70,7 @@ Route::get('/users/{user}', [UserController::class, 'show'])->name('users.show')
 // })
 
 Route::get('/profiles', [ProfileController::class, 'allProfiles'])->name('profiles.all')->middleware(['auth', 'verified']);
+Route::post('/profiles', [ProfileController::class, 'allProfiles'])->name('profiles.all')->middleware(['auth', 'verified']);
 Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
 ->where('id', '\d+')
 ->name('profile.detail')

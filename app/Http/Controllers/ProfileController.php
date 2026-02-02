@@ -8,19 +8,13 @@ use Illuminate\Validation\Rule;
 
 class ProfileController extends Controller
 {
-    // public function show()
-    // {
-    //     $user = Auth::user();
-    //     return view('profile', compact('user'));
-    // }
-
-     public function show() {
+    
+    public function show() {
         $user = Auth::user();
         return view('utilisateur/profile/profile', compact('user'));
     }
 
-    public function edit()
-    {
+    public function edit() {
         $user = Auth::user();
         return view('utilisateur/profile/action/edit', compact('user'));
     }
@@ -49,27 +43,28 @@ class ProfileController extends Controller
             ->with('type', 'success');
     }
 
-    public function allProfiles () {
-        $profiles = User::paginate(10);
+    public function allProfiles(Request $request) {
+        $search = $request->input('nom');
+
+        $query = User::query();
+
+        if (!empty($search)) {
+            $query->where('name', 'like', '%' . $search . '%');
+        }
+
+        $profiles = $query->paginate(10);
+
         return view('utilisateur/profile/all', compact('profiles'));
     }
 
-    // public function viewProfile ($id) {
-    //     $profile = User::findOrFail($id);
-    //     return view('utilisateur/profile/view', compact('profile'));
-    // }
 
-    public function showDetails (Request $request) {
-        $id = (int)$request->id;
+
+    public function showDetails ($id) {
         $user = User::findOrFail($id);
-        // $profile = User::find($id);
-        // if ($profile === null) {
-        //     // return redirect()->route('profiles.all')->with('text', 'Profile not found.')
-        //     //     ->with('type', 'danger');  
-        //     return abort(404); 
-        // }
-        // dd($user);
-        // return view('utilisateur/profile/detail-profile', compact('user'));
         return view('utilisateur/profile/detail-profile', compact('user'));
     }
+
+
+    // POST route now points to `allProfiles` so `allProfiless` is removed.
+
 }
