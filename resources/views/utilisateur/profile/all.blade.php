@@ -31,7 +31,6 @@
 
     <!-- Main Content -->
     <div class="container my-5">
-        <h1>{{ $search }}</h1>
 
         <!-- Header -->
         <div class="row mb-4">
@@ -44,10 +43,12 @@
                     <form method="GET" action="{{ route('profiles.all') }}" class="d-flex gap-2">
                         <input type="text" name="nom" class="form-control" placeholder="Search by name..." 
                                value="{{ request('nom') }}" style="max-width: 300px;">
-                        <select name="specialite" class="form-select" style="max-width: 200px;">
+                        <!-- <select name="specialite" class="form-select" style="max-width: 200px;">
                             <option value="all">All Specialities</option>
                             
-                        </select>
+                        </select> -->
+                        <input type="text" name="specialite" class="form-control" placeholder="Search by Specialite..." 
+                               value="{{ request('specialite') }}" style="max-width: 300px;">
                         <button type="submit" class="btn btn-primary">
                             <i class="bi bi-search"></i> Search
                         </button>

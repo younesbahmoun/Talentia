@@ -44,12 +44,17 @@ class ProfileController extends Controller
     }
 
     public function allProfiles(Request $request) {
-        $search = $request->input('nom');
+        $nom = $request->input('nom');
+        $specialite = $request->input('specialite');
 
         $query = User::query();
 
-        if (!empty($search)) {
-            $query->where('name', 'like', '%' . $search . '%');
+        if (!empty($nom)) {
+            $query->where('name', 'like', '%' . $nom . '%');
+        }
+
+        if (!empty($specialite)) {
+            $query->where('specialite', 'like', '%' . $specialite . '%');
         }
 
         $profiles = $query->paginate(10);
@@ -57,6 +62,27 @@ class ProfileController extends Controller
         return view('utilisateur/profile/all', compact('profiles'));
     }
 
+                /**
+     * POST /profiles
+     * Recherche simple par nom (name/prenom).
+     */
+    // public function allProfiless(Request $request)
+    // {
+    //     $search = (string) $request->input('search', '');
+
+    //     $query = User::query();
+
+    //     if ($search !== '') {
+    //         $query->where(function ($q) use ($search) {
+    //             $q->where('name', 'LIKE', "%{$search}%")
+    //               ->orWhere('prenom', 'LIKE', "%{$search}%");
+    //         });
+    //     }
+
+    //     $profiles = $query->orderBy('name')->paginate(10);
+
+    //     return view('utilisateur/profile/all', compact('profiles', 'search'));
+    // }
 
 
     public function showDetails ($id) {
