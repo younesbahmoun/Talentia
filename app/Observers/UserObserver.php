@@ -10,7 +10,13 @@ class UserObserver
      * Handle the User "created" event.
      */
     public function created(User $user): void {
-
+        $user->profile()->create([
+            'titre' => null,
+            'formation' => null,
+            'experiences' => null,
+            'competences' => null,
+            'photo' => null,
+        ]);
     }
 
     /**
