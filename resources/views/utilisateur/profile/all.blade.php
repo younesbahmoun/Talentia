@@ -67,8 +67,10 @@
                         <div class="card-body text-center pt-4">
                             <!-- Profile Photo -->
                             <div class="mb-3">
-                                <img src="{{ $profile->photo ?? 'https://ui-avatars.com/api/?name=' . urlencode($profile->name . ' ' . $profile->prenom) . '&background=0D8ABC&color=fff&size=120' }}" 
-                                    alt="John Doe" 
+                                <img src="{{ $profile->photo }}" 
+                                    alt="photo profile de {{ $profile->prenom }} {{ $profile->name }}" 
+                                    width="120" 
+                                    height="120" 
                                     class="rounded-circle profile-img">
                             </div>
                             
@@ -95,9 +97,11 @@
                                         <i class="bi bi-eye"></i> View Profile
                                     </button>
                                 </a>
-                                <button class="btn btn-outline-primary btn-sm">
-                                    <i class="bi bi-person-plus me-1"></i> Connect
-                                </button>
+                                <a href="{{  route('ajouter.amie', ['friend_id' => $profile->id])  }}">
+                                    <button class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-person-plus me-1"></i> Connect
+                                    </button>
+                                </a>
                             </div>
                         </div>
                     </div>
