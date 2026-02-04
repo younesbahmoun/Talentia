@@ -50,14 +50,17 @@ class ProfileController extends Controller
         $query = User::query();
 
         if (!empty($nom)) {
-            $query->where('name', 'like', '%' . $nom . '%');
+            $query->where(function($q) use ($nom) {
+                $q->where('name', 'like', '%' . $nom . '%')
+                  ->orWhere('prenom', 'like', '%' . $nom . '%');
+            });
         }
 
         if (!empty($specialite)) {
             $query->where('specialite', 'like', '%' . $specialite . '%');
         }
 
-        $profiles = $query->paginate(10);
+        $profiles = $query->orderBy('name')->paginate(12);
 
         return view('utilisateur/profile/all', compact('profiles'));
     }
@@ -89,8 +92,4 @@ class ProfileController extends Controller
         $user = User::findOrFail($id);
         return view('utilisateur/profile/detail-profile', compact('user'));
     }
-
-
-    // POST route now points to `allProfiles` so `allProfiless` is removed.
-
 }
