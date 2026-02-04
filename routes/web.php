@@ -76,4 +76,9 @@ Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
 ->name('profile.detail')
 ->middleware(['auth', 'verified']);
 
+// Route pour ajouter un ami
+Route::get('/friends', [UserController::class, 'ajouterAmie'])
+->name('ajouter.amie')
+->middleware(['auth', 'verified']);
+
 require __DIR__.'/auth.php';
