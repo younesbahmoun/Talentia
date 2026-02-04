@@ -58,6 +58,7 @@
             </div>
         </div>
 
+        {{-- alert success --}}
         @unless(!session('success'))
             <x-alert :type="'success'">
                 <p>{{ session('success') }}</p>
