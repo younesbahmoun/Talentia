@@ -58,6 +58,12 @@
             </div>
         </div>
 
+        @unless(!session('success'))
+            <x-alert :type="'success'">
+                <p>{{ session('success') }}</p>
+            </x-alert>
+        @endunless
+
         <!-- Profiles Grid -->
         <div class="row g-4">
             @foreach($profiles as $profile)   
@@ -108,8 +114,6 @@
                 </div>
             @endforeach
         </div>
-
-        {{ $profiles->links() }}
     </div>
     @section('footer')
         @include('components.footer')
