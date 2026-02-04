@@ -53,9 +53,13 @@ class User extends Authenticatable
 
     /**
      * Relation One-to-One avec Profile
-     */
+    */
     public function profile()
     {
-        return $this->hasOne(Profile::class, 'user_id');
+        return $this->hasOne(Profile::class);
+    }
+
+    public function friend() {
+        return $this->hasMany(Friend::class);
     }
 }
