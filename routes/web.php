@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\AmieController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TaskController;
@@ -80,5 +81,8 @@ Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
 Route::get('/friends', [UserController::class, 'ajouterAmie'])
 ->name('ajouter.amie')
 ->middleware(['auth', 'verified']);
+
+Route::get('/network', [AmieController::class, 'getAllAmie'])->name('network');
+
 
 require __DIR__.'/auth.php';
