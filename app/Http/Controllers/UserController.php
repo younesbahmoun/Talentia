@@ -75,4 +75,17 @@ class UserController extends Controller
 
         return back()->with('success', 'Demande d\'ami acceptée.');
     }
+
+    public function refuserAmie(Request $request) {
+        $friend = Friend::where('user_id', Auth::id())
+            ->where('friend_id', $request->friend_id)
+            ->first();
+
+        if ($friend) {
+            $friend->delete();
+        }
+
+        return back()->with('success', 'Demande d\'ami refusée.');
+    }
+
 }
