@@ -13,11 +13,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('dashboard') }}">Dashboard</a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a class="nav-link" href="{{ route('recherche.index') }}">Recherche</a>
-                    </li>
+                    </li> --}}
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('profile.show') }}">Mon profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('profiles.all') }}">All profil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('network') }}">Network</a>
                     </li>
                 @endauth
             </ul>
