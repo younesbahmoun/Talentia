@@ -115,6 +115,10 @@
                 </div>
             @endforeach
         </div>
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-4">
+            {{ $profiles->links() }}
+        </div>
     </div>
     @section('footer')
         @include('components.footer')
