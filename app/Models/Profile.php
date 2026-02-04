@@ -18,14 +18,13 @@ class Profile extends Model
         'formation',
         'experiences',
         'competences',
-        'photo'
+        'photo',
     ];
 
     /**
      * Relation avec l'utilisateur
-     */
-    public function user()
-    {
-        return $this->belongsTo(User::class, 'user_id');
+    */
+    public function user() {
+        return $this->belongsTo(User::class);
     }
 }
