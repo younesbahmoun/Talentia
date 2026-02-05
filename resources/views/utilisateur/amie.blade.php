@@ -35,6 +35,7 @@
         <!-- Invitations -->
         <div class="network-card shadow-sm mb-4">
             <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="fw-bold mb-0">Invitations ({{ $friends->count() }})</h5>
                 <a href="{{ route('network') }}" class="text-decoration-none small fw-bold">Manage all</a>
             </div>
 
