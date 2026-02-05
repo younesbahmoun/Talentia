@@ -6,9 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class Friend extends Model
 {
-    /** Table name (migration created 'friend' not 'friends') */
-    // protected $table = 'friend';
-
     protected $fillable = [
         'user_id',
         'friend_id',
@@ -17,5 +14,9 @@ class Friend extends Model
 
     public function user() {
         return $this->belongsTo(User::class);
+    }
+
+    public function friend() {
+        return $this->belongsTo(User::class, 'friend_id');
     }
 }
