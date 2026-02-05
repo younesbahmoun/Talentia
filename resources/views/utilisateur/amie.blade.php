@@ -85,7 +85,10 @@
                 </div>
             </div>
             <div class="list-group list-group-flush">
-                @foreach($friends as $friend)
+                @if($friends->count() == 0)
+                    <p class="text-center">Aucune ami</p>
+                @else
+                    @foreach($friends as $friend)
                         <!-- Connection 1 -->
                         <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center">
                             <img src="{{ $friend->friend->photo }}"
@@ -112,6 +115,7 @@
                             </div>
                         </div>
                     @endforeach
+                @endif
             </div>
 
             <div class="text-center mt-3">
