@@ -16,4 +16,12 @@ class AmieController extends Controller {
             ->get();
         return view('utilisateur.amie', compact('friends'));
     }
+
+    public function getAllAmie() {
+        $friends = Friend::with('friend.profile')
+            ->where('user_id', Auth::id())
+            ->where('status', 'accepted')
+            ->get();
+        return view('utilisateur.amie', compact('friends'));
+    }
 }
