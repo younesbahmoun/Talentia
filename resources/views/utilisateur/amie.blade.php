@@ -35,30 +35,32 @@
      <div class="container">
     <div class="network-card shadow-sm mb-4">
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h5 class="fw-bold mb-0">Invitations (2)</h5>
+            <h5 class="fw-bold mb-0">Invitations ({{ $friends->count() }})</h5>
             <a href="#" class="text-decoration-none small fw-bold">Manage all</a>
         </div>
 
-        <!-- Request 1 -->
-        <div class="request-item">
-            <div class="d-flex align-items-center">
-                <img src="https://ui-avatars.com/api/?name=Emma+Wilson&background=random"
-                    class="rounded-circle me-3" width="56" height="56">
-                <div>
-                    <h6 class="fw-bold mb-0">Emma Wilson</h6>
-                    <p class="text-secondary small mb-1">Recruiter at TalentHunt</p>
-                    <small class="text-muted"><i class="bi bi-people-fill me-1"></i> 3 mutual
-                        connections</small>
+        <!-- Requests-->
+        @foreach ($friends as $friend)
+            <div class="request-item">
+                <div class="d-flex align-items-center">
+                    <img src="https://ui-avatars.com/api/?name={{ $friend->friend->name }}&background=random"
+                        class="rounded-circle me-3" width="56" height="56">
+                    <div>
+                        <h6 class="fw-bold mb-0">{{ $friend->friend->name }}</h6>
+                        <p class="text-secondary small mb-1">{{ $friend->friend->email }}</p>
+                        <small class="text-muted"><i class="bi bi-people-fill me-1"></i> 3 mutual
+                            connections</small>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="">
+                        <button class="btn btn-outline-secondary fw-semibold">Supprimer</button>
+                    </a>
+                    <a href="">
+                        <button class="btn btn-primary-custom text-white">Confirmer</button>
+                    </a>
                 </div>
             </div>
-            <div class="d-flex gap-2">
-                <a href="">
-                    <button class="btn btn-outline-secondary fw-semibold">Supprimer</button>
-                </a>
-                <a href="">
-                    <button class="btn btn-primary-custom text-white">Confirmer</button>
-                </a>
-            </div>
-        </div>
+        @endforeach
     </div>
 </x-master>
