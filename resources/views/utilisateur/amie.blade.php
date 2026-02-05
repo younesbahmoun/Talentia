@@ -52,7 +52,7 @@
                 @foreach ($invitations as $invitation)
                     <div class="request-item">
                         <div class="d-flex align-items-center">
-                            <img src="https://ui-avatars.com/api/?name={{ $invitation->friend->name }}&background=random"
+                            <img src="{{ $invitation->friend->photo }}"
                                 class="rounded-circle me-3" width="56" height="56">
                             <div>
                                 <h6 class="fw-bold mb-0">{{ $invitation->friend->name }}</h6>
@@ -85,13 +85,14 @@
                 </div>
             </div>
             <div class="list-group list-group-flush">
+                @foreach($friends as $friend)
                     <!-- Connection 1 -->
                     <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center">
-                        <img src="https://ui-avatars.com/api/?name=Alice+Wonder&background=random"
+                        <img src="{{ $friend->friend->photo }}"
                             class="rounded-circle me-3" width="56" height="56">
                         <div class="flex-grow-1">
-                            <h6 class="fw-bold mb-0"></h6>
-                            <p class="text-secondary small mb-0"></p>
+                            <h6 class="fw-bold mb-0">{{ $friend->friend->name }}</h6>
+                            <p class="text-secondary small mb-0">{{ $friend->friend->email }}</p>
                         </div>
                         <div class="dropdown">
                             <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown"><i
@@ -110,6 +111,7 @@
                             </ul>
                         </div>
                     </div>
+                @endforeach
             </div>
 
             <div class="text-center mt-3">
