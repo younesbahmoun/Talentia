@@ -56,7 +56,7 @@
                     <a href="">
                         <button class="btn btn-outline-secondary fw-semibold">Supprimer</button>
                     </a>
-                    <a href="">
+                    <a href="{{ route('accepter.amie', $friend->friend->id) }}">
                         <button class="btn btn-primary-custom text-white">Confirmer</button>
                     </a>
                 </div>
