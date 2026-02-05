@@ -38,7 +38,9 @@
                 <a href="{{ route('network') }}" class="text-decoration-none small fw-bold">Manage all</a>
             </div>
 
-            
+            @if ($friends->count() == 0)
+                <p class="text-center">Aucune invitation</p>
+            @else
                 <!-- Requests-->
                 @foreach ($friends as $friend)
                     <div class="request-item">
@@ -62,7 +64,7 @@
                         </div>
                     </div>
                 @endforeach
-           
+            @endif
         </div>
 
     </div>
