@@ -53,7 +53,7 @@
                     </div>
                 </div>
                 <div class="d-flex gap-2">
-                    <a href="">
+                    <a href="{{ route('refuser.amie', $friend->friend->id) }}">
                         <button class="btn btn-outline-secondary fw-semibold">Supprimer</button>
                     </a>
                     <a href="{{ route('accepter.amie', $friend->friend->id) }}">
