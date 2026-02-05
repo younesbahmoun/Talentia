@@ -39,6 +39,12 @@
                 <a href="{{ route('network') }}" class="text-decoration-none small fw-bold">Manage all</a>
             </div>
 
+            @unless(!session()->has('success'))
+                <x-alert :type="'success'">
+                    <p>{{ session('success') }}</p>
+                </x-alert>
+            @endunless
+
             @if ($friends->count() == 0)
                 <p class="text-center">Aucune invitation</p>
             @else
