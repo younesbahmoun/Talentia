@@ -85,18 +85,19 @@ Route::get('/profiles/{id}', [ProfileController::class, 'showDetails'])
 ->middleware(['auth', 'verified']);
 
 // Route pour ajouter un ami
-Route::get('/friends', [UserController::class, 'ajouterAmie'])
+Route::get('/friends/add', [UserController::class, 'ajouterAmie'])
 ->name('ajouter.amie')
 ->middleware(['auth', 'verified']);
 
-Route::get('/friends/{id}', [UserController::class, 'accepterAmie'])
+Route::get('/friends/accept', [UserController::class, 'accepterAmie'])
 ->name('accepter.amie')
 ->middleware(['auth', 'verified']);
 
-Route::get('/friends/{id}', [UserController::class, 'refuserAmie'])
+Route::get('/friends/decline', [UserController::class, 'refuserAmie'])
 ->name('refuser.amie')
 ->middleware(['auth', 'verified']);
 
-Route::get('/network', [AmieController::class, 'getAllAnvitation'])->name('network');
+Route::get('/network', [AmieController::class, 'network'])->name('network');
+Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications')->middleware(['auth', 'verified']);
 
 require __DIR__.'/auth.php';
