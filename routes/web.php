@@ -6,9 +6,16 @@ use App\Http\Controllers\AmieController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TaskController;
-
-Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
-Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
+Route::get('/', function () {
+    $user = Auth::user();
+    return view('utilisateur/dashboard', [
+        'currentPage' => 'dashboard',
+        'users' => $user,
+    ]);
+})->middleware(['auth', 'verified'])->name('dashboard');
+// Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
+// Route::get('/', [TaskController::class, 'index'])->name('tasks.index');
+// Route::post('/', [TaskController::class, 'store'])->name('tasks.store');
 Route::delete('/{task}', [TaskController::class, 'destroy'])->name('tasks.destroy');
 
 // profile
@@ -82,7 +89,6 @@ Route::get('/friends', [UserController::class, 'ajouterAmie'])
 ->name('ajouter.amie')
 ->middleware(['auth', 'verified']);
 
-Route::get('/network', [AmieController::class, 'getAllAmie'])->name('network');
-
+Route::get('/network', [AmieController::class, 'getAllAnvitation'])->name('network');
 
 require __DIR__.'/auth.php';
