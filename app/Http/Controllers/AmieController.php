@@ -9,12 +9,14 @@ use Illuminate\Support\Facades\Auth;
 
 
 class AmieController extends Controller {
-    public function getAllAnvitation() {
+
+    public function getAllInvitation() {
         $friends = Friend::with('friend.profile')
             ->where('user_id', Auth::id())
             ->where('status', 'pending')
             ->get();
-        return view('utilisateur.amie', compact('friends'));
+        return $friends;
+        // return view('utilisateur.amie', compact('friends'));
     }
 
     public function getAllAmie() {
@@ -22,6 +24,17 @@ class AmieController extends Controller {
             ->where('user_id', Auth::id())
             ->where('status', 'accepted')
             ->get();
-        return view('utilisateur.amie', compact('friends'));
+        return $friends;
+        // return view('utilisateur.amie', compact('friends'));
+    }
+
+    public function network() {
+        $invitations = $this->getAllInvitation();
+        $friends = $this->getAllAmie();
+
+        return view('utilisateur.amie', [
+            'invitations' => $invitations,
+            'friends' => $friends,
+        ]);
     }
 }
