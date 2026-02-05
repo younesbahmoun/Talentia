@@ -89,6 +89,10 @@ Route::get('/friends', [UserController::class, 'ajouterAmie'])
 ->name('ajouter.amie')
 ->middleware(['auth', 'verified']);
 
+Route::get('/friends/{id}', [UserController::class, 'accepterAmie'])
+->name('accepter.amie')
+->middleware(['auth', 'verified']);
+
 Route::get('/network', [AmieController::class, 'getAllAnvitation'])->name('network');
 
 require __DIR__.'/auth.php';
