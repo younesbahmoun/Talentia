@@ -1,100 +1,90 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Créer une nouvelle offre</title>
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
-        
-        .form-card {
-            max-width: 800px;
-            margin: 40px auto;
-            padding: 30px;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
-            border-top: 4px solid #0d6efd;
-        }
-        
-        .form-title {
-            color: #333;
-            font-weight: 600;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #f0f0f0;
-        }
-        
-        .form-label {
-            font-weight: 500;
-            margin-bottom: 8px;
-            color: #444;
-        }
-        
-        .required-star {
-            color: #dc3545;
-        }
-        
-        .image-preview-container {
-            text-align: center;
-            margin-top: 20px;
-        }
-        
-        .image-preview {
-            max-width: 100%;
-            max-height: 200px;
-            border: 2px dashed #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            display: none;
-        }
-        
-        .form-control:focus, .form-select:focus {
-            border-color: #86b7fe;
-            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
-        }
-        
-        .btn-submit {
-            background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
-            border: none;
-            padding: 12px 30px;
-            font-weight: 600;
-            transition: all 0.3s ease;
-        }
-        
-        .btn-submit:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
-        }
-        
-        .char-counter {
-            font-size: 12px;
-            color: #6c757d;
-            text-align: right;
-            margin-top: 5px;
-        }
-        
-        .form-group {
-            margin-bottom: 20px;
-        }
-        
-        .header {
-            background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
-            color: white;
-            padding: 20px 0;
-            margin-bottom: 30px;
-        }
-    </style>
-</head>
-<body>
-
+<x-master title="Créer une nouvelle offre">
+    @section('styles')
+        <style>
+            body {
+                background-color: #f8f9fa;
+                font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            }
+            
+            .form-card {
+                max-width: 800px;
+                margin: 40px auto;
+                padding: 30px;
+                background: white;
+                border-radius: 12px;
+                box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+                border-top: 4px solid #0d6efd;
+            }
+            
+            .form-title {
+                color: #333;
+                font-weight: 600;
+                margin-bottom: 25px;
+                padding-bottom: 15px;
+                border-bottom: 2px solid #f0f0f0;
+            }
+            
+            .form-label {
+                font-weight: 500;
+                margin-bottom: 8px;
+                color: #444;
+            }
+            
+            .required-star {
+                color: #dc3545;
+            }
+            
+            .image-preview-container {
+                text-align: center;
+                margin-top: 20px;
+            }
+            
+            .image-preview {
+                max-width: 100%;
+                max-height: 200px;
+                border: 2px dashed #ddd;
+                border-radius: 8px;
+                padding: 10px;
+                display: none;
+            }
+            
+            .form-control:focus, .form-select:focus {
+                border-color: #86b7fe;
+                box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+            }
+            
+            .btn-submit {
+                background: linear-gradient(135deg, #0d6efd 0%, #0b5ed7 100%);
+                border: none;
+                padding: 12px 30px;
+                font-weight: 600;
+                transition: all 0.3s ease;
+            }
+            
+            .btn-submit:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(13, 110, 253, 0.3);
+            }
+            
+            .char-counter {
+                font-size: 12px;
+                color: #6c757d;
+                text-align: right;
+                margin-top: 5px;
+            }
+            
+            .form-group {
+                margin-bottom: 20px;
+            }
+            
+            .header {
+                background: linear-gradient(135deg, #0d6efd 0%, #0a58ca 100%);
+                color: white;
+                padding: 20px 0;
+                margin-bottom: 30px;
+            }
+        </style>
+    @endsection
     <!-- Header -->
     <!-- <div class="header">
         <div class="container">
@@ -116,8 +106,15 @@
                 <i class="fas fa-plus-circle text-primary me-2"></i>
                 Publier une nouvelle offre d'emploi
             </h2>
+
+            @unless(!session('success'))
+                <x-alert :type="'success'">
+                    <p>{{ session('success') }}</p>
+                </x-alert>
+            @endunless
             
             <form id="offreForm" method="POST" action="">
+                @csrf
                 
                 <!-- Titre -->
                 <div class="form-group">
@@ -217,10 +214,6 @@
             </form>
         </div>
     </div>
-
-    <!-- Bootstrap JS + Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
     <!-- Scripts personnalisés -->
     <script>
         // Compteur de caractères pour la description
@@ -294,6 +287,4 @@
         //     console.log('Formulaire de création d\'offre chargé');
         // });
     </script>
-
-</body>
-</html>
+</x-master>
