@@ -19,13 +19,21 @@ class OffreController extends Controller
             'image' => 'required|string|max:255',
             'entreprise' => 'required|string|max:255',
             'type_contrat' => 'required|in:CDI,CDD,Freelance,Stage,Alternance',
-            'status' => 'required|in:ferme,ouvert',
-            'user_id' => 'required|exists:users,id',
         ]);
 
-        Offre::create($request->all());
+        // Offre::create($request->all());
+        Offre::create([
+            'titre' => $request->titre,
+            'description' => $request->description,
+            'image' => $request->image,
+            'entreprise' => $request->entreprise,
+            'type_contrat' => $request->type_contrat,
+            'status' => 'ouvert',
+            'user_id' => auth()->user()->id,
+        ]);
 
-        return redirect()->route('offres.index')->with('success', 'Offre créée avec succès!');
+        // return redirect()->route('offres.index')->with('success', 'Offre créée avec succès!');
+        return redirect()->route('offres.create')->with('success', 'Offre créée avec succès!');
     }
 
     public function create() {
