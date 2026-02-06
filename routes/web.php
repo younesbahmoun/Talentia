@@ -100,4 +100,6 @@ Route::get('/friends/decline', [UserController::class, 'refuserAmie'])
 Route::get('/network', [AmieController::class, 'network'])->name('network');
 Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications')->middleware(['auth', 'verified']);
 
+Route::get('/offres', [OffreController::class, 'index'])->name('offres.index');
+
 require __DIR__.'/auth.php';
