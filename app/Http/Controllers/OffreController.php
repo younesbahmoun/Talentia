@@ -3,18 +3,13 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\Offre;
 
 class OffreController extends Controller
 {
-    public function index()
-    {
+    public function index() {
         $offres = Offre::all();
         return view('offres.index', compact('offres'));
-    }
-
-    public function create()
-    {
-        return view('offres.create');
     }
 
     public function store(Request $request) {
@@ -31,5 +26,9 @@ class OffreController extends Controller
         Offre::create($request->all());
 
         return redirect()->route('offres.index')->with('success', 'Offre créée avec succès!');
+    }
+
+    public function create() {
+        return view('recrutur.offres.create');
     }
 }
