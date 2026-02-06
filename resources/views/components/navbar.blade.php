@@ -25,6 +25,17 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('network') }}">Network</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('offres.index') }}">Offres</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ route('notifications') }}">
+                            Notifications
+                            @if(auth()->user()->unreadNotifications->count() > 0)
+                                <span class="badge bg-danger rounded-pill">{{ auth()->user()->unreadNotifications->count() }}</span>
+                            @endif
+                        </a>
+                    </li>
                 @endauth
             </ul>
             <ul class="navbar-nav">
