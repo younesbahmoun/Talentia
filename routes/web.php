@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AmieController;
+use App\Http\Controllers\OffreController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TaskController;
@@ -101,5 +102,8 @@ Route::get('/network', [AmieController::class, 'network'])->name('network');
 Route::get('/notifications', [UserController::class, 'notifications'])->name('notifications')->middleware(['auth', 'verified']);
 
 Route::get('/offres', [OffreController::class, 'index'])->name('offres.index');
+Route::get('/offres/detail/{id}', [OffreController::class, 'show'])->name('offres.detail');
+Route::get('/offres/create', [OffreController::class, 'create'])->name('offres.create')->middleware(['auth', 'verified']);
+Route::post('/offres/create', [OffreController::class, 'store'])->name('offres.store');
 
 require __DIR__.'/auth.php';
