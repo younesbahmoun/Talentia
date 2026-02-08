@@ -1,26 +1,23 @@
-<!DOCTYPE html>
-<html lang="fr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Détails de l'offre</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@section('footer')
+    @include('components.footer')
+@endsection
+<x-master title="Détails de l'offre">
     <div class="container my-5">
         <div class="row">
             <div class="col-lg-8 mx-auto">
                 
                 <!-- Image de l'offre -->
-                <img src="placeholder.jpg" class="img-fluid rounded mb-4" alt="Image offre">
+                @unless(!$offres->image)
+                    <img src="{{ $offres->image }}" class="img-fluid rounded mb-4" alt="Image offre">
+                @endunless
                 
                 <!-- En-tête de l'offre -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
                     <div>
-                        <h1 class="mb-2">Titre de l'offre</h1>
-                        <h5 class="text-muted">Nom de l'entreprise</h5>
+                        <h1 class="mb-2">{{ $offres->titre }}</h1>
+                        <h5 class="text-muted">{{ $offres->entreprise }}</h5>
                     </div>
-                    <span class="badge bg-primary fs-6">CDI</span>
+                    <span class="badge bg-primary fs-6">{{ $offres->type_contrat }}</span>
                 </div>
 
                 <hr>
@@ -28,17 +25,13 @@
                 <!-- Description -->
                 <div class="mb-4">
                     <h3 class="mb-3">Description du poste</h3>
-                    <p class="lead">
-                        Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-                        Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                        Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.
-                    </p>
-                    <p>
+                    <p class="lead">{{ $offres->description }}</p>
+                    <!-- <p>
                         Duis aute irure dolor in reprehenderit in voluptate velit esse 
                         cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat 
                         cupidatat non proident, sunt in culpa qui officia deserunt mollit 
                         anim id est laborum.
-                    </p>
+                    </p> -->
                 </div>
 
                 <!-- Bouton Postuler -->
@@ -54,7 +47,5 @@
             </div>
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>
+   
+</x-master>
