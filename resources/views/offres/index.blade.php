@@ -1,7 +1,6 @@
 <x-master title="Offres d'emploi">
     <div class="container my-5">
         <div class="row g-4">
-            
             @if($offres->count() > 0)
                 @foreach($offres as $offre)
                     <div class="col-md-6 col-lg-4">
@@ -12,7 +11,7 @@
                                 <h6 class="card-subtitle mb-2 text-muted">{{ $offre->entreprise }}</h6>
                                 <span class="badge bg-primary mb-3">{{ $offre->type_contrat }}</span>
                                 <p class="card-text">{{ Str::limit($offre->description, 30) }}</p>
-                                <a href="#" class="btn btn-primary">Voir détails</a>
+                                <a href="{{ route('offres.detail', $offre->id) }}" class="btn btn-primary">Voir détails</a>
                             </div>
                         </div>
                     </div>
