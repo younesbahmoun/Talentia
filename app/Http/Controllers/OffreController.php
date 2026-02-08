@@ -12,6 +12,11 @@ class OffreController extends Controller
         return view('offres.index', compact('offres'));
     }
 
+    public function show(Request $request) {
+        $offres = Offre::find($request->id);
+        return view('offres.detail', compact('offres'));
+    }
+
     public function store(Request $request) {
         $request->validate([
             'titre' => 'required|string|max:255',
@@ -31,8 +36,6 @@ class OffreController extends Controller
             'status' => 'ouvert',
             'user_id' => auth()->user()->id,
         ]);
-
-        // return redirect()->route('offres.index')->with('success', 'Offre créée avec succès!');
         return redirect()->route('offres.create')->with('success', 'Offre créée avec succès!');
     }
 
