@@ -12,20 +12,22 @@ class AmieController extends Controller {
 
     public function getAllInvitation() {
         $friends = Friend::with('friend.profile')
-            ->where('user_id', Auth::id())
+            ->where('friend_id', Auth::id())
             ->where('status', 'pending')
             ->get();
         return $friends;
-        // return view('utilisateur.amie', compact('friends'));
     }
 
     public function getAllAmie() {
         $friends = Friend::with('friend.profile')
-            ->where('user_id', Auth::id())
+            ->where(function($query) {
+                $query->where('user_id', Auth::id())
+                    ->orWhere('friend_id', Auth::id());
+            })
             ->where('status', 'accepted')
             ->get();
+            
         return $friends;
-        // return view('utilisateur.amie', compact('friends'));
     }
 
     public function network() {
