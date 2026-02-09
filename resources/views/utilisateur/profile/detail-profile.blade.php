@@ -39,7 +39,10 @@
                             <textarea class="form-control" rows="3" readonly>{{ $user->bio }}</textarea>
                         </div>
 
-                        <div class="text-end">
+                        <div class="d-flex justify-content-between align-items-center mt-4">
+                            <a href="{{ route('ajouter.amie', ['friend_id' => $user->id]) }}" class="btn btn-outline-primary">
+                                <i class="bi bi-person-plus me-1"></i> Connect
+                            </a>
                             <a href="{{ route('profiles.all') }}" class="btn btn-primary">Retour</a>
                         </div>
                     </div>
