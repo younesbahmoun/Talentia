@@ -7,9 +7,7 @@
             <div class="col-lg-8 mx-auto">
                 
                 <!-- Image de l'offre -->
-                @unless(!$offres->image)
-                    <img src="{{ $offres->image }}" class="img-fluid rounded mb-4" alt="Image offre">
-                @endunless
+                <img src="{{ $offres->image ? asset('storage/'.$offres->image) : 'https://via.placeholder.com/1200x600.png/004466?text=Job+Offer' }}" class="img-fluid rounded mb-4 w-100" alt="Image offre" style="max-height: 500px; object-fit: cover;">
                 
                 <!-- En-tête de l'offre -->
                 <div class="d-flex justify-content-between align-items-start mb-3">
@@ -36,10 +34,19 @@
 
                 <!-- Bouton Postuler -->
                 <div class="d-grid gap-2 d-md-block">
-                    <a href="#" class="btn btn-primary btn-lg px-5">
-                        <i class="bi bi-send-fill"></i> Postuler à cette offre
-                    </a>
-                    <a href="index.html" class="btn btn-outline-secondary btn-lg">
+                    @auth
+                        <form action="{{ route('offres.apply', $offres->id) }}" method="POST" style="display: inline;">
+                            @csrf
+                            <button type="submit" class="btn btn-primary btn-lg px-5">
+                                <i class="bi bi-send-fill"></i> Postuler à cette offre
+                            </button>
+                        </form>
+                    @else
+                        <a href="{{ route('login') }}" class="btn btn-primary btn-lg px-5">
+                            <i class="bi bi-send-fill"></i> Connectez-vous pour postuler
+                        </a>
+                    @endauth
+                    <a href="{{ route('offres.index') }}" class="btn btn-outline-secondary btn-lg">
                         Retour aux offres
                     </a>
                 </div>

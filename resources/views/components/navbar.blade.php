@@ -28,6 +28,11 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('offres.index') }}">Offres</a>
                     </li>
+                    @role('recruteur')
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ route('recruiter.candidats') }}">Mes Candidats</a>
+                        </li>
+                    @endrole
                     <li class="nav-item">
                         <a class="nav-link" href="{{ route('notifications') }}">
                             Notifications

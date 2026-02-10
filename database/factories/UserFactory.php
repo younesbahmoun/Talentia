@@ -23,16 +23,30 @@ class UserFactory extends Factory
      */
     public function definition(): array
     {
+        $specialites = [
+            'Développeur web',
+            'Développeur PHP',
+            'Développeur Frontend',
+            'Développeur Backend',
+            'Designer UX',
+            'Designer graphique',
+            'Chef de projet',
+            'Marketing digital',
+            'Data Scientist',
+            'DevOps',
+        ];
+
         return [
-            'name' => fake()->name(),
+            'name' => fake()->lastName(),
             'prenom' => fake()->firstName(),
+            'role' => fake()->randomElement(['admin', 'user', 'candidat']),
+            'specialite' => fake()->randomElement($specialites),
+            'photo' => '',
+            'bio' => fake()->sentence(10),
             'email' => fake()->unique()->safeEmail(),
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'remember_token' => Str::random(10),
-            // 'role' => fake()->randomElement(['admin', 'user', 'moderator']),
-            // 'photo' => fake()->imageUrl(),
-            // 'bio' => fake()->sentence(),
         ];
     }
 

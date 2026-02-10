@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Offre;
+use App\Models\Application;
 
 class OffreController extends Controller
 {
@@ -41,5 +42,32 @@ class OffreController extends Controller
 
     public function create() {
         return view('recrutur.offres.create');
+    }
+
+    public function apply(Request $request, $id) {
+        $application = Application::firstOrCreate(
+            [
+                'user_id' => auth()->id(),
+                'offre_id' => $id
+            ],
+            [
+                'status' => 'pending'
+            ]
+        );
+
+        if ($application->wasRecentlyCreated) {
+            return redirect()->back()->with('success', 'Votre candidature a été envoyée avec succès!');
+        } else {
+            return redirect()->back()->with('info', 'Vous avez déjà postulé à cette offre.');
+        }
+    }
+
+    public function candidats() {
+        $user = auth()->user();
+        $offres = Offre::where('user_id', $user->id)
+                       ->with(['applications.user'])
+                       ->get();
+        
+        return view('recrutur.offres.candidats', compact('offres'));
     }
 }

@@ -52,20 +52,21 @@
                 @foreach ($invitations as $invitation)
                     <div class="request-item">
                         <div class="d-flex align-items-center">
-                            <img src="{{ $invitation->friend->photo }}"
+                            <img src="{{ $invitation->user->photo ?? 'https://ui-avatars.com/api/?name=' . urlencode($invitation->user->name) }}"
                                 class="rounded-circle me-3" width="56" height="56">
                             <div>
-                                <h6 class="fw-bold mb-0">{{ $invitation->friend->name }}</h6>
-                                <p class="text-secondary small mb-1">{{ $invitation->friend->email }}</p>
-                                <small class="text-muted"><i class="bi bi-people-fill me-1"></i> 3 mutual
-                                    connections</small>
+                                <h6 class="fw-bold mb-0">{{ $invitation->user->name }} {{ $invitation->user->prenom ?? '' }}</h6>
+                                <p class="text-secondary small mb-1">{{ $invitation->user->email }}</p>
+                                @if($invitation->user->profile)
+                                    <small class="text-muted"><i class="bi bi-briefcase-fill me-1"></i>{{ $invitation->user->profile->specialite ?? 'No speciality' }}</small>
+                                @endif
                             </div>
                         </div>
                         <div class="d-flex gap-2">
-                            <a href="{{ route('refuser.amie', ['friend_id' => $invitation->friend->id]) }}">
+                            <a href="{{ route('refuser.amie', ['friend_id' => $invitation->user_id]) }}">
                                 <button class="btn btn-outline-secondary fw-semibold">Supprimer</button>
                             </a>
-                            <a href="{{ route('accepter.amie', ['friend_id' => $invitation->friend->id]) }}">
+                            <a href="{{ route('accepter.amie', ['friend_id' => $invitation->user_id]) }}">
                                 <button class="btn btn-primary-custom text-white">Confirmer</button>
                             </a>
                         </div>
@@ -89,7 +90,6 @@
                     <p class="text-center">Aucune ami</p>
                 @else
                     @foreach($friends as $friend)
-                        <!-- Connection 1 -->
                         <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center">
                             <img src="{{ $friend->friend->photo }}"
                                 class="rounded-circle me-3" width="56" height="56">
@@ -103,13 +103,13 @@
                                 <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
                                     <li>
                                         <a class="dropdown-item" href="#">
-                                            <iclass="bi bi-chat me-2">
-                                            </i>Message</a>
+                                            <i class="bi bi-chat me-2"></i>Message
+                                        </a>
                                     </li>
                                     <li>
                                         <a class="dropdown-item text-danger" href="#">
-                                            <iclass="bi bi-person-dash me-2">
-                                            </i>Remove connection</a>
+                                            <i class="bi bi-person-dash me-2"></i>Remove connection
+                                        </a>
                                     </li>
                                 </ul>
                             </div>

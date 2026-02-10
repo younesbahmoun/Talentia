@@ -103,7 +103,9 @@ Route::get('/notifications', [UserController::class, 'notifications'])->name('no
 
 Route::get('/offres', [OffreController::class, 'index'])->name('offres.index');
 Route::get('/offres/detail/{id}', [OffreController::class, 'show'])->name('offres.detail');
-Route::get('/offres/create', [OffreController::class, 'create'])->name('offres.create')->middleware(['auth', 'verified']);
-Route::post('/offres/create', [OffreController::class, 'store'])->name('offres.store');
+Route::get('/offres/create', [OffreController::class, 'create'])->name('offres.create')->middleware(['auth', 'verified', 'role:recruteur']);
+Route::post('/offres/create', [OffreController::class, 'store'])->name('offres.store')->middleware(['auth', 'verified', 'role:recruteur']);
+Route::post('/offres/{id}/apply', [OffreController::class, 'apply'])->name('offres.apply')->middleware(['auth', 'verified', 'role:candidat']);
+Route::get('/recruiter/candidats', [OffreController::class, 'candidats'])->name('recruiter.candidats')->middleware(['auth', 'verified', 'role:recruteur']);
 
 require __DIR__.'/auth.php';

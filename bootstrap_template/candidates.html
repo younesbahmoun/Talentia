@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talentia - Find Candidates</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --secondary-color: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #334155;
+        }
+
+        .navbar {
+            background-color: white;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .navbar-brand {
+            font-weight: 700;
+            color: var(--primary-color) !important;
+            letter-spacing: -0.5px;
+        }
+
+        .candidate-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s ease;
+            height: 100%;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .candidate-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
+            border-color: var(--primary-color);
+        }
+
+        .avatar-lg {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 3px solid #eff6ff;
+        }
+
+        .skill-badge {
+            background-color: #f1f5f9;
+            color: #475569;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 20px;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .btn-primary-custom {
+            background-color: var(--primary-color);
+            border: none;
+            padding: 8px 20px;
+            font-weight: 600;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg sticky-top">
+        <div class="container">
+            <a class="navbar-brand fs-4" href="index.html">
+                <i class="bi bi-briefcase-fill me-2"></i>Talentia
+            </a>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item"><a class="nav-link fw-medium" href="jobs.html">Jobs</a></li>
+                    <li class="nav-item"><a class="nav-link fw-medium active text-primary"
+                            href="candidates.html">Candidates</a></li>
+                </ul>
+                <div class="dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle text-dark"
+                        data-bs-toggle="dropdown">
+                        <img src="https://ui-avatars.com/api/?name=Recruiter" class="rounded-circle me-2" width="32"
+                            height="32">
+                        <span class="fw-medium">Tech Recruiter</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg">
+                        <li><a class="dropdown-item" href="employer_dashboard.html">Dashboard</a></li>
+                        <li><a class="dropdown-item" href="index.html">Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Search Header -->
+    <div class="bg-white py-5 border-bottom">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8 text-center">
+                    <h1 class="fw-bold mb-3">Find Top Talent</h1>
+                    <p class="text-secondary mb-4">Search for candidates by name, specialty, or skills.</p>
+                    <div class="input-group input-group-lg shadow-sm">
+                        <span class="input-group-text bg-white border-end-0"><i class="bi bi-search"></i></span>
+                        <input type="text" class="form-control border-start-0"
+                            placeholder="e.g. Laravel Developer, Designer...">
+                        <button class="btn btn-primary-custom text-white">Search Candidates</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Candidate Grid -->
+    <div class="container py-5">
+        <div class="row g-4">
+
+            <!-- Candidate 1 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="candidate-card">
+                    <img src="https://ui-avatars.com/api/?name=John+Doe&background=random" class="avatar-lg">
+                    <h5 class="fw-bold mb-1">John Doe</h5>
+                    <p class="text-primary small fw-semibold mb-3">Senior Laravel Developer</p>
+                    <div class="mb-4">
+                        <span class="skill-badge">Laravel</span>
+                        <span class="skill-badge">Vue.js</span>
+                        <span class="skill-badge">MySQL</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="profile.html" class="btn btn-outline-primary btn-sm">View Profile</a>
+                        <button class="btn btn-primary-custom btn-sm text-white"><i class="bi bi-person-plus me-1"></i>
+                            Connect</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 2 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="candidate-card">
+                    <img src="https://ui-avatars.com/api/?name=Jane+Smith&background=random" class="avatar-lg">
+                    <h5 class="fw-bold mb-1">Jane Smith</h5>
+                    <p class="text-primary small fw-semibold mb-3">UX/UI Designer</p>
+                    <div class="mb-4">
+                        <span class="skill-badge">Figma</span>
+                        <span class="skill-badge">Adobe XD</span>
+                        <span class="skill-badge">CSS3</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="profile.html" class="btn btn-outline-primary btn-sm">View Profile</a>
+                        <button class="btn btn-primary-custom btn-sm text-white"><i class="bi bi-person-plus me-1"></i>
+                            Connect</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 3 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="candidate-card">
+                    <img src="https://ui-avatars.com/api/?name=Mike+Ross&background=random" class="avatar-lg">
+                    <h5 class="fw-bold mb-1">Mike Ross</h5>
+                    <p class="text-primary small fw-semibold mb-3">Backend Engineer</p>
+                    <div class="mb-4">
+                        <span class="skill-badge">PHP</span>
+                        <span class="skill-badge">Python</span>
+                        <span class="skill-badge">Docker</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="profile.html" class="btn btn-outline-primary btn-sm">View Profile</a>
+                        <button class="btn btn-outline-secondary btn-sm" disabled><i class="bi bi-clock me-1"></i>
+                            Pending</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Candidate 4 -->
+            <div class="col-md-6 col-lg-3">
+                <div class="candidate-card">
+                    <img src="https://ui-avatars.com/api/?name=Sarah+Lee&background=random" class="avatar-lg">
+                    <h5 class="fw-bold mb-1">Sarah Lee</h5>
+                    <p class="text-primary small fw-semibold mb-3">Product Manager</p>
+                    <div class="mb-4">
+                        <span class="skill-badge">Agile</span>
+                        <span class="skill-badge">Scrum</span>
+                        <span class="skill-badge">Jira</span>
+                    </div>
+                    <div class="d-grid gap-2">
+                        <a href="profile.html" class="btn btn-outline-primary btn-sm">View Profile</a>
+                        <button class="btn btn-primary-custom btn-sm text-white"><i class="bi bi-person-plus me-1"></i>
+                            Connect</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Pagination -->
+        <div class="d-flex justify-content-center mt-5">
+            <nav>
+                <ul class="pagination">
+                    <li class="page-item disabled"><a class="page-link" href="#">Previous</a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#">Next</a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
