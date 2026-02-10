@@ -32,18 +32,18 @@ Thumbs.db
 *.sublime-workspace
 
 # OS
-.DS_Store
-Thumbs.db
-.env.*.swp
+# .DS_Store
+# Thumbs.db
+# .env.*.swp
 
 # Breeze generated files
-/resources/views/components
-/resources/views/layouts/app.blade.php
-/resources/views/layouts/guest.blade.php
-/resources/views/layouts/navigation.blade.php
-/resources/views/auth
+# /resources/views/components
+# /resources/views/layouts/app.blade.php
+# /resources/views/layouts/guest.blade.php
+# /resources/views/layouts/navigation.blade.php
+# /resources/views/auth
 
 # Laravel
-/bootstrap/cache/
-/storage/logs/
-/storage/debugbar/
+# /bootstrap/cache/
+# /storage/logs/
+# /storage/debugbar/
