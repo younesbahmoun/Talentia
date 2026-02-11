@@ -39,7 +39,9 @@ class UserController extends Controller
             'status' => 'pending',
         ]);
 
-        return back()->with('success', 'Demande d\'ami envoyée avec succès.');
+        $request->session()->flash('success', 'User created successfully!');
+        return redirect()->route('profiles.all');
+        // return back()->with('success', 'Demande d\'ami envoyée avec succès.');
     }
 
     public function accepterAmie(Request $request) {
