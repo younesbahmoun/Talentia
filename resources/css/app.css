@@ -1,3 +1,13 @@
-@tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/*
+ * Tailwind defines a `.collapse` utility with `visibility: collapse`.
+ * Bootstrap uses `.collapse` for navbar menus, so we force visibility
+ * back to visible for Bootstrap navbar collapse containers.
+ */
+.navbar .navbar-collapse,
+.navbar .navbar-collapse.collapse,
+.navbar .navbar-collapse.collapsing {
+    visibility: visible;
+}

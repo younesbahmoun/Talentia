@@ -1,0 +1,13 @@
+﻿
+   PASS  Tests\Unit\MessageModelTest
+  Γ£ô messageΓÇª 1.07s  
+  Γ£ô messageΓÇª 0.04s  
+  Γ£ô has filΓÇª 0.04s  
+  Γ£ô has filΓÇª 0.07s  
+  Γ£ô is imagΓÇª 0.07s  
+  Γ£ô is imagΓÇª 0.06s  
+  Γ£ô messageΓÇª 0.06s  
+
+  Tests:    7 passed (10 assertions)
+  Duration: 1.86s
+

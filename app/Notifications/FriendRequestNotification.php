@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
@@ -11,9 +10,6 @@ class FriendRequestNotification extends Notification
 {
     use Queueable;
 
-    /**
-     * Create a new notification instance.
-     */
     protected $sender;
 
     public function __construct($sender)
@@ -23,7 +19,7 @@ class FriendRequestNotification extends Notification
 
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        return ['database'];
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -36,13 +32,13 @@ class FriendRequestNotification extends Notification
                     ->line('Merci d\'utiliser Talentia !');
     }
 
-    // toDatabase
     public function toArray(object $notifiable): array
     {
         return [
-            'message' => $this->sender->name . ' vous a envoyé une demande d\'ami.',
+            'message' => $this->sender->name . ' ' . ($this->sender->prenom ?? '') . ' vous a envoyé une demande d\'ami.',
             'sender_id' => $this->sender->id,
-            'sender_name' => $this->sender->name,
+            'sender_name' => $this->sender->name . ' ' . ($this->sender->prenom ?? ''),
+            'type' => 'friend_request',
         ];
     }
 }

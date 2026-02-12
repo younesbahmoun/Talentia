@@ -7,6 +7,9 @@ use App\Models\Friend;
 use App\Models\Offre;
 use App\Models\Application;
 use App\Models\Profile;
+use App\Models\Conversation;
+use App\Models\Message;
+use App\Notifications\FriendRequestNotification;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
@@ -310,6 +313,100 @@ class DatabaseSeeder extends Seeder
 
         $this->command->info('✓ Applications created');
 
+        // ─── 9. Create Conversations & Messages ───────────────────────
+        // testUser has accepted friends: candidats[1] (Lucas), candidats[2] (Sophie), candidats[3] (Alexandre)
+
+        $lucas = $candidats[1];
+        $sophie = $candidats[2];
+        $alexandre = $candidats[3];
+
+        // Conversation 1: testUser <-> Lucas Martin
+        $conv1 = Conversation::between($testUser->id, $lucas->id);
+        $conv1Messages = [
+            [$lucas->id, 'Salut Younes ! Comment tu vas ?', now()->subHours(5)],
+            [$testUser->id, 'Hey Lucas ! Ça va bien et toi ? Tu travailles sur quoi en ce moment ?', now()->subHours(4)->subMinutes(50)],
+            [$lucas->id, 'Je suis sur un projet Laravel assez sympa, une plateforme de recrutement 😄', now()->subHours(4)->subMinutes(40)],
+            [$testUser->id, 'Ah trop bien ! Moi aussi je bosse avec Laravel en ce moment. Tu utilises quelle version ?', now()->subHours(4)->subMinutes(30)],
+            [$lucas->id, 'Laravel 12 avec Reverb pour le temps réel. C\'est vraiment puissant !', now()->subHours(4)->subMinutes(20)],
+            [$testUser->id, 'Cool ! On devrait partager nos retours d\'expérience un de ces jours', now()->subHours(4)->subMinutes(10)],
+            [$lucas->id, 'Bonne idée ! T\'es dispo cette semaine pour un call ?', now()->subHours(3)],
+            [$lucas->id, 'Je pense qu\'on pourrait aussi parler de Livewire vs Inertia', now()->subMinutes(45)],
+            [$lucas->id, 'Au fait, t\'as vu l\'offre de DevOps chez StartupLab ? Elle a l\'air intéressante', now()->subMinutes(10)],
+        ];
+
+        foreach ($conv1Messages as [$senderId, $body, $createdAt]) {
+            Message::create([
+                'conversation_id' => $conv1->id,
+                'sender_id' => $senderId,
+                'body' => $body,
+                'is_read' => $senderId === $testUser->id ? true : false,
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ]);
+        }
+        // Mark older messages as read, keep last 3 from Lucas unread
+        Message::where('conversation_id', $conv1->id)
+            ->where('sender_id', $lucas->id)
+            ->where('created_at', '<', now()->subHours(2))
+            ->update(['is_read' => true]);
+
+        // Conversation 2: testUser <-> Sophie Petit
+        $conv2 = Conversation::between($testUser->id, $sophie->id);
+        $conv2Messages = [
+            [$testUser->id, 'Bonjour Sophie ! J\'ai vu ton profil, tu fais du UX/UI c\'est ça ?', now()->subDays(2)->subHours(3)],
+            [$sophie->id, 'Bonjour Younes ! Oui exactement, je suis designer UX/UI spécialisée en mobile', now()->subDays(2)->subHours(2)->subMinutes(45)],
+            [$testUser->id, 'Super ! Je cherche justement quelqu\'un pour m\'aider sur un design d\'interface', now()->subDays(2)->subHours(2)->subMinutes(30)],
+            [$sophie->id, 'Avec plaisir ! Tu peux m\'en dire plus ?', now()->subDays(2)->subHours(2)->subMinutes(20)],
+            [$testUser->id, 'C\'est une app de messagerie en temps réel avec des indicateurs de présence', now()->subDays(2)->subHours(2)->subMinutes(10)],
+            [$sophie->id, 'Oh ça me parle ! J\'ai justement travaillé sur des projets similaires avec Figma', now()->subDays(2)->subHours(2)],
+            [$testUser->id, 'Parfait, je t\'envoie le brief demain matin 👍', now()->subDays(2)->subHours(1)->subMinutes(50)],
+            [$sophie->id, 'Top ! J\'attends ça avec impatience 🎨', now()->subDays(2)->subHours(1)->subMinutes(45)],
+        ];
+
+        foreach ($conv2Messages as [$senderId, $body, $createdAt]) {
+            Message::create([
+                'conversation_id' => $conv2->id,
+                'sender_id' => $senderId,
+                'body' => $body,
+                'is_read' => true,
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ]);
+        }
+
+        // Conversation 3: testUser <-> Alexandre Roux
+        $conv3 = Conversation::between($testUser->id, $alexandre->id);
+        $conv3Messages = [
+            [$alexandre->id, 'Hey Younes ! Tu connais un bon dataset pour du NLP en français ?', now()->subDays(1)->subHours(6)],
+            [$testUser->id, 'Salut Alex ! Regarde GigaFrench ou CamemBERT, ils sont pas mal', now()->subDays(1)->subHours(5)->subMinutes(30)],
+            [$alexandre->id, 'Merci je vais regarder ! Tu bosses aussi avec du Python ?', now()->subDays(1)->subHours(5)],
+            [$testUser->id, 'Oui un peu pour les scripts d\'automatisation, mais surtout PHP côté web', now()->subDays(1)->subHours(4)->subMinutes(45)],
+            [$alexandre->id, 'OK cool. Au fait j\'ai postulé à l\'offre Data Scientist chez CloudNine', now()->subDays(1)->subHours(4)->subMinutes(30)],
+            [$testUser->id, 'Bonne chance ! Tiens-moi au courant 🤞', now()->subDays(1)->subHours(4)->subMinutes(20)],
+            [$alexandre->id, 'Merci ! Je te dirai. À plus !', now()->subDays(1)->subHours(4)],
+        ];
+
+        foreach ($conv3Messages as [$senderId, $body, $createdAt]) {
+            Message::create([
+                'conversation_id' => $conv3->id,
+                'sender_id' => $senderId,
+                'body' => $body,
+                'is_read' => true,
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ]);
+        }
+
+        $this->command->info('✓ 3 conversations with ' . (count($conv1Messages) + count($conv2Messages) + count($conv3Messages)) . ' messages created');
+
+        // ─── 10. Create Notifications ──────────────────────────────────
+
+        // Pending friend requests from candidats[5] and candidats[6] generate notifications
+        $testUser->notify(new FriendRequestNotification($candidats[5]));
+        $testUser->notify(new FriendRequestNotification($candidats[6]));
+
+        $this->command->info('✓ 2 friend request notifications created');
+
         // ─── Summary ─────────────────────────────────────────────────
         $this->command->newLine();
         $this->command->info('══════════════════════════════════════════════');
@@ -318,6 +415,9 @@ class DatabaseSeeder extends Seeder
         $this->command->info('  📧 Admin login:  admin@talentia.local');
         $this->command->info('  📧 User login:   test.user@talentia.local');
         $this->command->info('  🔑 Password:     password');
+        $this->command->info('  💬 3 conversations with messages');
+        $this->command->info('  🔔 2 pending friend request notifications');
         $this->command->info('══════════════════════════════════════════════');
     }
 }
+

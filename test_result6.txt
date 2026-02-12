@@ -1,0 +1,15 @@
+﻿
+   PASS  Tests\Unit\ConversationModelTest
+  Γ£ô conversationΓÇª  1.09s  
+  Γ£ô conversationΓÇª  0.03s  
+  Γ£ô conversationΓÇª  0.03s  
+  Γ£ô conversationΓÇª  1.05s  
+  Γ£ô between creatΓÇª 0.04s  
+  Γ£ô between returΓÇª 0.03s  
+  Γ£ô has participaΓÇª 0.03s  
+  Γ£ô get other useΓÇª 0.03s  
+  Γ£ô unread countΓÇª  0.04s  
+
+  Tests:    9 passed (16 assertions)
+  Duration: 2.72s
+

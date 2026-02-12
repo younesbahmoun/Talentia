@@ -1,0 +1,12 @@
+﻿
+   PASS  Tests\Feature\UserPresenceTest
+  Γ£ô user is markeΓÇª 1.16s  
+  Γ£ô login dispatcΓÇª 0.02s  
+  Γ£ô user is markeΓÇª 0.02s  
+  Γ£ô logout dispatΓÇª 0.04s  
+  Γ£ô mark online uΓÇª 0.06s  
+  Γ£ô mark offlineΓÇª  0.06s  
+
+  Tests:    6 passed (10 assertions)
+  Duration: 1.79s
+

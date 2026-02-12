@@ -28,6 +28,11 @@
             .btn-primary-custom:hover {
                 background: #0b5ed7;
             }
+
+            .friend-avatar {
+                position: relative;
+                display: inline-block;
+            }
         </style>
     @endsection
         
@@ -52,8 +57,11 @@
                 @foreach ($invitations as $invitation)
                     <div class="request-item">
                         <div class="d-flex align-items-center">
-                            <img src="{{ $invitation->user->photo ?? 'https://ui-avatars.com/api/?name=' . urlencode($invitation->user->name) }}"
-                                class="rounded-circle me-3" width="56" height="56">
+                            <div class="friend-avatar me-3" data-user-id="{{ $invitation->user->id }}">
+                                <img src="{{ $invitation->user->photo ?? 'https://ui-avatars.com/api/?name=' . urlencode($invitation->user->name) }}"
+                                    class="rounded-circle" width="56" height="56">
+                                <span class="online-indicator {{ $invitation->user->is_online ? 'online' : 'offline' }}"></span>
+                            </div>
                             <div>
                                 <h6 class="fw-bold mb-0">{{ $invitation->user->name }} {{ $invitation->user->prenom ?? '' }}</h6>
                                 <p class="text-secondary small mb-1">{{ $invitation->user->email }}</p>
@@ -90,28 +98,48 @@
                     <p class="text-center">Aucune ami</p>
                 @else
                     @foreach($friends as $friend)
+                        @php
+                            $friendUser = $friend->user_id === auth()->id() ? $friend->friend : $friend->user;
+                        @endphp
                         <div class="list-group-item px-0 py-3 border-bottom d-flex align-items-center">
-                            <img src="{{ $friend->friend->photo }}"
-                                class="rounded-circle me-3" width="56" height="56">
-                            <div class="flex-grow-1">
-                                <h6 class="fw-bold mb-0">{{ $friend->friend->name }}</h6>
-                                <p class="text-secondary small mb-0">{{ $friend->friend->email }}</p>
+                            <div class="friend-avatar me-3" data-user-id="{{ $friendUser->id }}">
+                                <img src="{{ $friendUser->photo }}"
+                                    class="rounded-circle" width="56" height="56">
+                                <span class="online-indicator {{ $friendUser->is_online ? 'online' : 'offline' }}"></span>
                             </div>
-                            <div class="dropdown">
-                                <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown"><i
-                                        class="bi bi-three-dots-vertical"></i></button>
-                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
-                                    <li>
-                                        <a class="dropdown-item" href="#">
-                                            <i class="bi bi-chat me-2"></i>Message
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a class="dropdown-item text-danger" href="#">
-                                            <i class="bi bi-person-dash me-2"></i>Remove connection
-                                        </a>
-                                    </li>
-                                </ul>
+                            <div class="flex-grow-1">
+                                <h6 class="fw-bold mb-0">{{ $friendUser->name }} {{ $friendUser->prenom ?? '' }}</h6>
+                                <p class="text-secondary small mb-0">{{ $friendUser->email }}</p>
+                                @if($friendUser->is_online)
+                                    <small class="text-success"><i class="bi bi-circle-fill" style="font-size:6px"></i> En ligne</small>
+                                @elseif($friendUser->last_seen_at)
+                                    <small class="text-muted">Vu {{ $friendUser->last_seen_at->diffForHumans() }}</small>
+                                @endif
+                            </div>
+                            <div class="d-flex gap-2">
+                                <form action="{{ route('conversations.store') }}" method="POST" class="d-inline">
+                                    @csrf
+                                    <input type="hidden" name="user_id" value="{{ $friendUser->id }}">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                                        <i class="bi bi-chat me-1"></i>Message
+                                    </button>
+                                </form>
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm rounded-circle" data-bs-toggle="dropdown"><i
+                                            class="bi bi-three-dots-vertical"></i></button>
+                                    <ul class="dropdown-menu dropdown-menu-end border-0 shadow">
+                                        <li>
+                                            <a class="dropdown-item" href="{{ route('profile.detail', $friendUser->id) }}">
+                                                <i class="bi bi-person me-2"></i>Voir le profil
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a class="dropdown-item text-danger" href="#">
+                                                <i class="bi bi-person-dash me-2"></i>Remove connection
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
                             </div>
                         </div>
                     @endforeach

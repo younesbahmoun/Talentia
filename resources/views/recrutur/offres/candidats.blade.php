@@ -43,7 +43,7 @@
                                                 </td>
                                                 <td>{{ $application->created_at->format('d/m/Y H:i') }}</td>
                                                 <td>
-                                                    <a href="{{ route('users.show', $application->user->id) }}" class="btn btn-sm btn-primary">Voir profil</a>
+                                                    <a href="{{ route('profile.detail', $application->user->id) }}" class="btn btn-sm btn-primary">Voir profil</a>
                                                 </td>
                                             </tr>
                                         @endforeach
