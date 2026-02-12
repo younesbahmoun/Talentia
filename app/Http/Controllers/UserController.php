@@ -90,4 +90,51 @@ class UserController extends Controller
         Auth::user()->unreadNotifications->markAsRead();
         return view('utilisateur.notifications', compact('notifications'));
     }
+
+
+    public function completeProfile() {
+        if (!session()->has('social_user')) {
+            return redirect()->route('login');
+        }
+        return view('profile.complete'); 
+    }
+
+    public function saveProfile(Request $request){
+        $request->validate([
+            'role' => 'required|in:candidat,recruteur',
+            'specialite' => 'nullable|string|max:255',
+            'photo' => 'nullable|string|max:255',
+            'bio' => 'nullable|string|max:500',
+        ]);
+
+        $social = session('social_user');
+
+        if (!$social) {
+            return redirect()->route('login');
+        }
+
+        $name = $social['name'] ?? 'User';
+        $names = explode(' ', $name);
+
+        $user = User::create([
+            'prenom' => $names[0] ?? '',
+            'nom' => $names[1] ?? '',
+            'name' => $name,
+            'email' => $social['email'],
+            'password' => null,
+            'role' => $request->role,
+            'specialite' => $request->specialite,
+            'photo' => $request->photo,
+            'bio' => $request->bio,
+            'email_verified_at' => now(),
+        ]);
+
+        Auth::login($user);
+
+        session()->forget('social_user');
+
+        return redirect()->route('dashboard');
+    }
+
+
 }

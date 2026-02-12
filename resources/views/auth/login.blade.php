@@ -42,6 +42,18 @@
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}
             </x-primary-button>
+
+            <!-- <a href="{{ url('/auth/google/redirect') }}">
+                Login with Google
+            </a>
+
+            <a href="{{ url('/auth/github/redirect') }}">
+                Login with GitHub
+            </a> -->
+            <a href="{{ route('social.redirect', 'google') }}">Se connecter avec Google</a>
+            <a href="{{ route('social.redirect', 'github') }}">Se connecter avec GitHub</a>
+
+
         </div>
     </form>
 </x-guest-layout>

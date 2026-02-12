@@ -4,9 +4,11 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\AmieController;
 use App\Http\Controllers\OffreController;
+use App\Http\Controllers\Auth\SocialController;//github & google
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\TaskController;
+
 Route::get('/', function () {
     $user = Auth::user();
     return view('utilisateur/dashboard', [
@@ -109,3 +111,17 @@ Route::post('/offres/{id}/apply', [OffreController::class, 'apply'])->name('offr
 Route::get('/recruiter/candidats', [OffreController::class, 'candidats'])->name('recruiter.candidats')->middleware(['auth', 'verified', 'role:recruteur']);
 
 require __DIR__.'/auth.php';
+
+
+
+// les routes des authentification google & github
+// pour completer le profil
+Route::get('/profile/complete', [UserController::class, 'completeProfile'])->name('profile.complete');
+Route::post('/profile/complete', [UserController::class, 'saveProfile'])->name('profile.save');
+// pour google
+Route::get('/auth/{provider}/redirect', [SocialController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
+
+
+
+
