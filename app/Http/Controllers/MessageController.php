@@ -10,7 +10,9 @@ use App\Models\Message;
 use App\Notifications\NewMessageNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Throwable;
 
 class MessageController extends Controller
 {
@@ -41,14 +43,14 @@ class MessageController extends Controller
         $message->load('sender');
 
         // Broadcast the message
-        broadcast(new MessageSent($message))->toOthers();
+        $this->broadcastSafely(new MessageSent($message), true);
 
         // Send notification to the other user
         $otherUser = $conversation->getOtherUser($user->id);
         $otherUser->notify(new NewMessageNotification($message));
 
         // Broadcast notification event
-        broadcast(new NewNotification(
+        $this->broadcastSafely(new NewNotification(
             $otherUser->id,
             'new_message',
             [
@@ -59,9 +61,9 @@ class MessageController extends Controller
             ]
         ));
 
-        if ($request->wantsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
-                'message' => $message,
+                'message' => $this->messagePayload($message),
                 'status' => 'success',
             ]);
         }
@@ -102,13 +104,13 @@ class MessageController extends Controller
         $message->load('sender');
 
         // Broadcast the message
-        broadcast(new MessageSent($message))->toOthers();
+        $this->broadcastSafely(new MessageSent($message), true);
 
         // Send notification
         $otherUser = $conversation->getOtherUser($user->id);
         $otherUser->notify(new NewMessageNotification($message));
 
-        broadcast(new NewNotification(
+        $this->broadcastSafely(new NewNotification(
             $otherUser->id,
             'new_message',
             [
@@ -119,9 +121,9 @@ class MessageController extends Controller
             ]
         ));
 
-        if ($request->wantsJson()) {
+        if ($request->expectsJson() || $request->ajax()) {
             return response()->json([
-                'message' => $message,
+                'message' => $this->messagePayload($message),
                 'status' => 'success',
             ]);
         }
@@ -146,7 +148,17 @@ class MessageController extends Controller
             ->update(['is_read' => true]);
 
         if ($updated > 0) {
-            broadcast(new MessageRead($conversation->id, $user->id))->toOthers();
+            $this->broadcastSafely(new MessageRead($conversation->id, $user->id), true);
+
+            $this->broadcastSafely(new NewNotification(
+                $user->id,
+                'messages_read',
+                [
+                    'silent' => true,
+                    'conversation_id' => $conversation->id,
+                    'updated' => $updated,
+                ]
+            ));
         }
 
         return response()->json(['status' => 'ok', 'updated' => $updated]);
@@ -159,5 +171,71 @@ class MessageController extends Controller
     {
         $count = Auth::user()->totalUnreadMessages();
         return response()->json(['count' => $count]);
+    }
+
+    /**
+     * Retrieve latest conversation messages after a given message id.
+     */
+    public function latest(Request $request, Conversation $conversation)
+    {
+        $user = Auth::user();
+
+        if (!$conversation->hasParticipant($user->id)) {
+            abort(403);
+        }
+
+        $afterId = max((int) $request->query('after_id', 0), 0);
+
+        $messages = Message::with('sender')
+            ->where('conversation_id', $conversation->id)
+            ->when($afterId > 0, function ($query) use ($afterId) {
+                $query->where('id', '>', $afterId);
+            })
+            ->orderBy('id', 'asc')
+            ->limit(50)
+            ->get()
+            ->map(function (Message $message) {
+                return $this->messagePayload($message);
+            })
+            ->values();
+
+        return response()->json(['messages' => $messages]);
+    }
+
+    private function broadcastSafely(object $event, bool $toOthers = false): void
+    {
+        try {
+            $pendingBroadcast = broadcast($event);
+
+            if ($toOthers) {
+                $pendingBroadcast->toOthers();
+            }
+        } catch (Throwable $exception) {
+            Log::warning('Real-time broadcast failed', [
+                'event' => $event::class,
+                'message' => $exception->getMessage(),
+            ]);
+        }
+    }
+
+    private function messagePayload(Message $message): array
+    {
+        if (!$message->relationLoaded('sender')) {
+            $message->load('sender');
+        }
+
+        return [
+            'id' => $message->id,
+            'conversation_id' => $message->conversation_id,
+            'sender_id' => $message->sender_id,
+            'sender_name' => $message->sender->name . ' ' . ($message->sender->prenom ?? ''),
+            'sender_photo' => $message->sender->photo,
+            'body' => $message->body,
+            'file_path' => $message->file_path,
+            'file_name' => $message->file_name,
+            'file_type' => $message->file_type,
+            'is_read' => (bool) $message->is_read,
+            'created_at' => $message->created_at?->toISOString(),
+        ];
     }
 }

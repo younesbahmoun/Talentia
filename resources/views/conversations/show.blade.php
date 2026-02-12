@@ -275,7 +275,7 @@
 
             {{-- Chat input --}}
             <div class="chat-input-container">
-                <form class="chat-input-form" id="message-form">
+                <form class="chat-input-form" id="message-form" method="POST" action="{{ route('messages.store') }}">
                     @csrf
                     <input type="hidden" name="conversation_id" value="{{ $conversation->id }}">
                     <button type="button" class="chat-file-btn" onclick="document.getElementById('file-input').click()">
@@ -301,12 +301,121 @@
             const filePreview = document.getElementById('file-preview');
             const conversationId = {{ $conversation->id }};
             const currentUserId = {{ auth()->id() }};
+            const otherUserId = {{ $otherUser->id }};
+            const renderedMessageIds = new Set(
+                Array.from(document.querySelectorAll('.message-bubble[data-message-id]'))
+                    .map((node) => Number(node.dataset.messageId))
+                    .filter((value) => Number.isFinite(value))
+            );
+            let latestMessageId = renderedMessageIds.size > 0 ? Math.max(...renderedMessageIds) : 0;
 
             // Scroll to bottom
             function scrollToBottom() {
                 chatMessages.scrollTop = chatMessages.scrollHeight;
             }
             scrollToBottom();
+
+            if (typeof window.updateMessageBadge === 'function') {
+                window.updateMessageBadge();
+            }
+
+            function getRealtimeSocketId() {
+                if (typeof window.getRealtimeSocketId === 'function') {
+                    return window.getRealtimeSocketId();
+                }
+
+                if (typeof window.Echo !== 'undefined' && typeof window.Echo.socketId === 'function') {
+                    return window.Echo.socketId();
+                }
+
+                return null;
+            }
+
+            function getAjaxHeaders(includeCsrf = false) {
+                const headers = {
+                    'X-Requested-With': 'XMLHttpRequest',
+                    'Accept': 'application/json',
+                };
+
+                const socketId = getRealtimeSocketId();
+                if (socketId) {
+                    headers['X-Socket-ID'] = socketId;
+                }
+
+                if (includeCsrf) {
+                    const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+                    if (csrfToken) {
+                        headers['X-CSRF-TOKEN'] = csrfToken;
+                    }
+                }
+
+                return headers;
+            }
+
+            function markConversationAsRead() {
+                return fetch('/messages/' + conversationId + '/read', {
+                    method: 'POST',
+                    headers: getAjaxHeaders(true),
+                    credentials: 'same-origin',
+                })
+                    .then(() => {
+                        if (typeof window.updateMessageBadge === 'function') {
+                            window.updateMessageBadge();
+                        }
+                    })
+                    .catch(() => {});
+            }
+
+            function parseJsonResponse(response) {
+                return response.text().then((rawBody) => {
+                    let parsedBody = null;
+
+                    try {
+                        parsedBody = rawBody ? JSON.parse(rawBody) : null;
+                    } catch (error) {
+                        parsedBody = null;
+                    }
+
+                    if (!response.ok || !parsedBody) {
+                        throw new Error('Invalid JSON response from server.');
+                    }
+
+                    return parsedBody;
+                });
+            }
+
+            function pollLatestMessages() {
+                return fetch('/messages/' + conversationId + '/latest?after_id=' + latestMessageId, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin',
+                })
+                    .then(parseJsonResponse)
+                    .then((data) => {
+                        if (!Array.isArray(data.messages) || data.messages.length === 0) {
+                            return;
+                        }
+
+                        let hasIncomingMessages = false;
+
+                        data.messages.forEach((message) => {
+                            const isSentByCurrentUser = Number(message.sender_id) === Number(currentUserId);
+                            appendMessage(message, isSentByCurrentUser);
+
+                            if (!isSentByCurrentUser) {
+                                hasIncomingMessages = true;
+                            }
+                        });
+
+                        if (hasIncomingMessages) {
+                            markConversationAsRead();
+                        }
+                    })
+                    .catch(() => {});
+            }
 
             // Send text message via AJAX
             messageForm.addEventListener('submit', function(e) {
@@ -318,17 +427,16 @@
 
                 fetch('{{ route("messages.store") }}', {
                     method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                    },
+                    headers: getAjaxHeaders(),
                     body: formData,
+                    credentials: 'same-origin',
                 })
-                .then(r => r.json())
+                .then(parseJsonResponse)
                 .then(data => {
                     if (data.status === 'success') {
                         appendMessage(data.message, true);
                         messageInput.value = '';
+                        messageInput.focus();
                     }
                 })
                 .catch(err => console.error('Error sending:', err));
@@ -363,13 +471,11 @@
 
                 fetch('{{ route("messages.upload") }}', {
                     method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Accept': 'application/json',
-                    },
+                    headers: getAjaxHeaders(),
                     body: formData,
+                    credentials: 'same-origin',
                 })
-                .then(r => r.json())
+                .then(parseJsonResponse)
                 .then(data => {
                     if (data.status === 'success') {
                         appendMessage(data.message, true);
@@ -383,43 +489,56 @@
             if (typeof window.Echo !== 'undefined') {
                 window.Echo.private('conversation.' + conversationId)
                     .listen('.message.sent', (data) => {
-                        appendMessage(data, false);
-                        // Mark as read
-                        fetch('/messages/' + conversationId + '/read', {
-                            method: 'POST',
-                            headers: {
-                                'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content,
-                                'Accept': 'application/json',
-                            }
-                        });
+                        const isSentByCurrentUser = Number(data.sender_id) === Number(currentUserId);
+                        appendMessage(data, isSentByCurrentUser);
+
+                        if (!isSentByCurrentUser) {
+                            markConversationAsRead();
+                        }
                     })
                     .listen('.message.read', (data) => {
-                        // Messages have been read by the other user
-                        document.querySelectorAll('.message-sent .message-read-status')
-                            .forEach(el => el.innerHTML = '<i class="bi bi-check2-all text-info"></i>');
-                    });
-
-                // Listen for user status change
-                window.Echo.channel('online')
-                    .listen('.user.status', (data) => {
-                        if (data.user_id === {{ $otherUser->id }}) {
-                            const statusEl = document.getElementById('user-status');
-                            const indicator = document.querySelector('.chat-header-avatar .online-indicator');
-                            if (data.is_online) {
-                                statusEl.innerHTML = '<span class="text-success"><i class="bi bi-circle-fill" style="font-size:8px"></i> En ligne</span>';
-                                indicator?.classList.add('online');
-                                indicator?.classList.remove('offline');
-                            } else {
-                                statusEl.innerHTML = '<span class="text-muted"><i class="bi bi-circle-fill" style="font-size:8px"></i> Hors ligne</span>';
-                                indicator?.classList.remove('online');
-                                indicator?.classList.add('offline');
-                            }
+                        if (Number(data.reader_id) === Number(currentUserId) && typeof window.updateMessageBadge === 'function') {
+                            window.updateMessageBadge();
                         }
                     });
             }
 
+            window.addEventListener('talentia:user-status-changed', (event) => {
+                const data = event.detail || {};
+                if (Number(data.user_id) !== Number(otherUserId)) {
+                    return;
+                }
+
+                const statusEl = document.getElementById('user-status');
+                if (!statusEl) {
+                    return;
+                }
+
+                if (data.is_online) {
+                    statusEl.innerHTML = '<span class="text-success"><i class="bi bi-circle-fill" style="font-size:8px"></i> En ligne</span>';
+                    return;
+                }
+
+                const lastSeen = formatLastSeen(data.last_seen_at);
+                statusEl.innerHTML = '<span class="text-muted"><i class="bi bi-circle-fill" style="font-size:8px"></i> ' + lastSeen + '</span>';
+            });
+
+            pollLatestMessages();
+            setInterval(pollLatestMessages, 3000);
+
             // Append a message to the chat
             function appendMessage(msg, isSent) {
+                const messageId = Number(msg.id || 0);
+
+                if (messageId && renderedMessageIds.has(messageId)) {
+                    return;
+                }
+
+                if (messageId) {
+                    renderedMessageIds.add(messageId);
+                    latestMessageId = Math.max(latestMessageId, messageId);
+                }
+
                 const div = document.createElement('div');
                 div.className = 'message-bubble ' + (isSent ? 'message-sent' : 'message-received');
                 div.dataset.messageId = msg.id;
@@ -429,11 +548,12 @@
                     html += '<p class="message-text">' + escapeHtml(msg.body) + '</p>';
                 }
                 if (msg.file_path) {
+                    const filePath = encodeURI(msg.file_path);
                     html += '<div class="message-file">';
                     if (msg.file_type && msg.file_type.startsWith('image/')) {
-                        html += '<img src="/storage/' + msg.file_path + '" class="img-fluid" style="max-width:240px;border-radius:8px">';
+                        html += '<img src="/storage/' + filePath + '" class="img-fluid" style="max-width:240px;border-radius:8px">';
                     } else {
-                        html += '<a href="/storage/' + msg.file_path + '" class="message-file-doc" target="_blank" download>';
+                        html += '<a href="/storage/' + filePath + '" class="message-file-doc" target="_blank" download>';
                         html += '<i class="bi bi-file-earmark-arrow-down fs-5"></i>';
                         html += '<div><div class="fw-medium small">' + escapeHtml(msg.file_name || 'Fichier') + '</div>';
                         html += '<div style="font-size:11px;opacity:0.7">Télécharger</div></div></a>';
@@ -452,6 +572,22 @@
                 const div = document.createElement('div');
                 div.textContent = text;
                 return div.innerHTML;
+            }
+
+            function formatLastSeen(lastSeenAt) {
+                if (!lastSeenAt) {
+                    return 'Hors ligne';
+                }
+
+                const date = new Date(lastSeenAt);
+                if (Number.isNaN(date.getTime())) {
+                    return 'Hors ligne';
+                }
+
+                return 'Vu à ' + date.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                });
             }
         });
 

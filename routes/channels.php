@@ -27,5 +27,10 @@ Broadcast::channel('notifications.{userId}', function ($user, $userId) {
 
 // Public online status channel
 Broadcast::channel('online', function ($user) {
-    return $user ? ['id' => $user->id, 'name' => $user->name] : false;
+    return $user ? [
+        'id' => $user->id,
+        'name' => $user->name,
+        'prenom' => $user->prenom,
+        'photo' => $user->photo,
+    ] : false;
 });

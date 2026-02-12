@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\MessageRead;
+use App\Events\NewNotification;
 use App\Models\Conversation;
-use App\Models\Friend;
 use App\Models\Message;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ConversationController extends Controller
 {
@@ -48,10 +51,24 @@ class ConversationController extends Controller
         }
 
         // Mark messages as read
-        Message::where('conversation_id', $conversation->id)
+        $updated = Message::where('conversation_id', $conversation->id)
             ->where('sender_id', '!=', $user->id)
             ->where('is_read', false)
             ->update(['is_read' => true]);
+
+        if ($updated > 0) {
+            $this->broadcastSafely(new MessageRead($conversation->id, $user->id));
+
+            $this->broadcastSafely(new NewNotification(
+                $user->id,
+                'messages_read',
+                [
+                    'silent' => true,
+                    'conversation_id' => $conversation->id,
+                    'updated' => $updated,
+                ]
+            ));
+        }
 
         // Load messages with sender
         $messages = $conversation->messages()->with('sender')->get();
@@ -86,5 +103,17 @@ class ConversationController extends Controller
         $conversation = Conversation::between($user->id, $otherUserId);
 
         return redirect()->route('conversations.show', $conversation);
+    }
+
+    private function broadcastSafely(object $event): void
+    {
+        try {
+            broadcast($event);
+        } catch (Throwable $exception) {
+            Log::warning('Real-time broadcast failed in conversation flow', [
+                'event' => $event::class,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

@@ -8,7 +8,9 @@ use App\Events\UserStatusChanged;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\View\View;
+use Throwable;
 
 class AuthenticatedSessionController extends Controller
 {
@@ -34,7 +36,7 @@ class AuthenticatedSessionController extends Controller
         $user->markOnline();
 
         // Broadcast online status
-        broadcast(new UserStatusChanged(
+        $this->broadcastSafely(new UserStatusChanged(
             $user->id,
             true,
             now()->toISOString()
@@ -54,7 +56,7 @@ class AuthenticatedSessionController extends Controller
         if ($user) {
             $user->markOffline();
 
-            broadcast(new UserStatusChanged(
+            $this->broadcastSafely(new UserStatusChanged(
                 $user->id,
                 false,
                 now()->toISOString()
@@ -68,5 +70,17 @@ class AuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect('/');
+    }
+
+    private function broadcastSafely(object $event): void
+    {
+        try {
+            broadcast($event);
+        } catch (Throwable $exception) {
+            Log::warning('Real-time broadcast failed during authentication', [
+                'event' => $event::class,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

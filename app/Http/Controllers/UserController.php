@@ -9,6 +9,8 @@ use App\Events\UserStatusChanged;
 use App\Notifications\FriendRequestNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class UserController extends Controller
 {
@@ -51,7 +53,7 @@ class UserController extends Controller
             $receiver->notify(new FriendRequestNotification($sender));
 
             // Broadcast real-time notification
-            broadcast(new NewNotification(
+            $this->broadcastSafely(new NewNotification(
                 $receiver->id,
                 'friend_request',
                 [
@@ -79,7 +81,7 @@ class UserController extends Controller
             // Notify the original sender that their request was accepted
             $sender = User::find($request->friend_id);
             if ($sender) {
-                broadcast(new NewNotification(
+                $this->broadcastSafely(new NewNotification(
                     $sender->id,
                     'friend_accepted',
                     [
@@ -128,5 +130,17 @@ class UserController extends Controller
         return response()->json([
             'count' => Auth::user()->unreadNotifications->count(),
         ]);
+    }
+
+    private function broadcastSafely(object $event): void
+    {
+        try {
+            broadcast($event);
+        } catch (Throwable $exception) {
+            Log::warning('Real-time broadcast failed on user action', [
+                'event' => $event::class,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

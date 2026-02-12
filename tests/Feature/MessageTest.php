@@ -51,6 +51,27 @@ class MessageTest extends TestCase
         ]);
     }
 
+    public function test_ajax_send_message_returns_json_payload(): void
+    {
+        [$user1, $user2, $conversation] = $this->setupFriendsWithConversation();
+
+        $response = $this->actingAs($user1)
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->post('/messages', [
+                'conversation_id' => $conversation->id,
+                'body' => 'AJAX payload message',
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('message.body', 'AJAX payload message')
+            ->assertJsonPath('message.conversation_id', $conversation->id);
+    }
+
     public function test_sending_message_dispatches_broadcast_event(): void
     {
         Event::fake([MessageSent::class]);
@@ -136,6 +157,31 @@ class MessageTest extends TestCase
         ]);
     }
 
+    public function test_ajax_upload_returns_json_payload(): void
+    {
+        Storage::fake('public');
+
+        [$user1, $user2, $conversation] = $this->setupFriendsWithConversation();
+
+        $file = UploadedFile::fake()->image('instant.jpg', 200, 200);
+
+        $response = $this->actingAs($user1)
+            ->withHeaders([
+                'Accept' => 'application/json',
+                'X-Requested-With' => 'XMLHttpRequest',
+            ])
+            ->post('/messages/upload', [
+                'conversation_id' => $conversation->id,
+                'file' => $file,
+            ]);
+
+        $response
+            ->assertOk()
+            ->assertJsonPath('status', 'success')
+            ->assertJsonPath('message.conversation_id', $conversation->id)
+            ->assertJsonPath('message.file_name', 'instant.jpg');
+    }
+
     public function test_file_upload_rejects_invalid_types(): void
     {
         Storage::fake('public');
@@ -196,6 +242,34 @@ class MessageTest extends TestCase
         $this->actingAs($user2)->post('/messages/' . $conversation->id . '/read');
 
         Event::assertDispatched(MessageRead::class);
+    }
+
+    public function test_latest_messages_endpoint_returns_only_new_messages(): void
+    {
+        [$user1, $user2, $conversation] = $this->setupFriendsWithConversation();
+
+        $message1 = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_id' => $user1->id,
+            'body' => 'First',
+            'is_read' => false,
+        ]);
+
+        $message2 = Message::create([
+            'conversation_id' => $conversation->id,
+            'sender_id' => $user1->id,
+            'body' => 'Second',
+            'is_read' => false,
+        ]);
+
+        $response = $this->actingAs($user2)
+            ->getJson('/messages/' . $conversation->id . '/latest?after_id=' . $message1->id);
+
+        $response
+            ->assertOk()
+            ->assertJsonCount(1, 'messages')
+            ->assertJsonPath('messages.0.id', $message2->id)
+            ->assertJsonPath('messages.0.body', 'Second');
     }
 
     public function test_unread_count_endpoint(): void

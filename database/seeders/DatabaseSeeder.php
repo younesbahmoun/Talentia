@@ -55,7 +55,34 @@ class DatabaseSeeder extends Seeder
         ]);
         $testUser->assignRole('candidat');
 
-        $this->command->info('✓ 2 known test users created (admin@talentia.local / test.user@talentia.local)');
+        // Real-time Testing Users
+        $alice = User::create([
+            'name'              => 'Dubois',
+            'prenom'            => 'Alice',
+            'role'              => 'candidat',
+            'specialite'        => 'Développeur Frontend',
+            'photo'             => 'https://ui-avatars.com/api/?name=Alice+Dubois&background=9b59b6&color=fff&size=128',
+            'bio'               => 'Développeur Frontend spécialisé en React et Vue.js. Passionnée par les interfaces utilisateur modernes et les animations web.',
+            'email'             => 'alice@talentia.local',
+            'email_verified_at' => now(),
+            'password'          => 'password',
+        ]);
+        $alice->assignRole('candidat');
+
+        $bob = User::create([
+            'name'              => 'Moreau',
+            'prenom'            => 'Bob',
+            'role'              => 'candidat',
+            'specialite'        => 'Développeur Backend',
+            'photo'             => 'https://ui-avatars.com/api/?name=Bob+Moreau&background=e74c3c&color=fff&size=128',
+            'bio'               => 'Développeur Backend expert en Laravel et API REST. Intéressé par l\'architecture microservices et le temps réel.',
+            'email'             => 'bob@talentia.local',
+            'email_verified_at' => now(),
+            'password'          => 'password',
+        ]);
+        $bob->assignRole('candidat');
+
+        $this->command->info('✓ 4 known test users created (admin@talentia.local / test.user@talentia.local / alice@talentia.local / bob@talentia.local)');
 
         // ─── 3. Create additional recruteurs ──────────────────────────
 
@@ -270,6 +297,10 @@ class DatabaseSeeder extends Seeder
             [$testUser->id, $candidats[4]->id, 'pending'],
             [$candidats[5]->id, $testUser->id, 'pending'],  // invitation received
             [$candidats[6]->id, $testUser->id, 'pending'],  // invitation received
+            // Real-time test users connections
+            [$alice->id, $bob->id, 'accepted'],  // Alice and Bob are friends
+            [$alice->id, $testUser->id, 'accepted'],  // Alice is friends with testUser
+            [$bob->id, $testUser->id, 'pending'],  // Bob sent request to testUser
             // Other connections
             [$candidats[1]->id, $candidats[3]->id, 'accepted'],
             [$candidats[2]->id, $candidats[4]->id, 'accepted'],
@@ -290,7 +321,7 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 15 friend relationships created');
+        $this->command->info('✓ 18 friend relationships created (including Alice & Bob)');
 
         // ─── 8. Create Applications ───────────────────────────────────
 
@@ -397,7 +428,34 @@ class DatabaseSeeder extends Seeder
             ]);
         }
 
-        $this->command->info('✓ 3 conversations with ' . (count($conv1Messages) + count($conv2Messages) + count($conv3Messages)) . ' messages created');
+        // Conversation 4: Alice <-> Bob (Real-time Testing)
+        $conv4 = Conversation::between($alice->id, $bob->id);
+        $conv4Messages = [
+            [$alice->id, 'Salut Bob ! Tu es là ?', now()->subMinutes(30)],
+            [$bob->id, 'Hey Alice ! Oui je suis là, quoi de neuf ?', now()->subMinutes(28)],
+            [$alice->id, 'Je voulais tester les fonctionnalités temps réel de la plateforme', now()->subMinutes(25)],
+            [$bob->id, 'Bonne idée ! On peut tester la messagerie instantanée', now()->subMinutes(23)],
+            [$alice->id, 'Exactement ! Et aussi les indicateurs de présence', now()->subMinutes(20)],
+            [$bob->id, 'Cool, je vois que tu es en ligne 🟢', now()->subMinutes(18)],
+            [$alice->id, 'Oui ! Et les notifications en temps réel aussi', now()->subMinutes(15)],
+            [$bob->id, 'Super ! On devrait aussi tester avec plusieurs onglets ouverts', now()->subMinutes(10)],
+            [$alice->id, 'Bonne idée ! Je vais ouvrir un autre onglet', now()->subMinutes(5)],
+            [$bob->id, 'Ok, je t\'envoie un message maintenant', now()->subMinutes(2)],
+            [$bob->id, 'Tu l\'as reçu en temps réel ?', now()->subMinutes(1)],
+        ];
+
+        foreach ($conv4Messages as [$senderId, $body, $createdAt]) {
+            Message::create([
+                'conversation_id' => $conv4->id,
+                'sender_id' => $senderId,
+                'body' => $body,
+                'is_read' => $senderId === $alice->id ? true : false,  // Bob's last 2 messages are unread
+                'created_at' => $createdAt,
+                'updated_at' => $createdAt,
+            ]);
+        }
+
+        $this->command->info('✓ 4 conversations with ' . (count($conv1Messages) + count($conv2Messages) + count($conv3Messages) + count($conv4Messages)) . ' messages created');
 
         // ─── 10. Create Notifications ──────────────────────────────────
 
@@ -415,8 +473,15 @@ class DatabaseSeeder extends Seeder
         $this->command->info('  📧 Admin login:  admin@talentia.local');
         $this->command->info('  📧 User login:   test.user@talentia.local');
         $this->command->info('  🔑 Password:     password');
-        $this->command->info('  💬 3 conversations with messages');
-        $this->command->info('  🔔 2 pending friend request notifications');
+        $this->command->newLine();
+        $this->command->info('  🧪 Real-time Testing Users:');
+        $this->command->info('  📧 Alice:        alice@talentia.local');
+        $this->command->info('  � Bob:          bob@talentia.local');
+        $this->command->info('  🔑 Password:     password');
+        $this->command->newLine();
+        $this->command->info('  �💬 4 conversations with messages');
+        $this->command->info('  🔔 Pending friend requests & notifications');
+        $this->command->info('  ⚡ Alice & Bob have active conversation for real-time testing');
         $this->command->info('══════════════════════════════════════════════');
     }
 }

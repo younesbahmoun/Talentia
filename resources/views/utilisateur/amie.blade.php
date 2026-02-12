@@ -65,6 +65,19 @@
                             <div>
                                 <h6 class="fw-bold mb-0">{{ $invitation->user->name }} {{ $invitation->user->prenom ?? '' }}</h6>
                                 <p class="text-secondary small mb-1">{{ $invitation->user->email }}</p>
+                                <small
+                                    class="{{ $invitation->user->is_online ? 'text-success' : 'text-muted' }}"
+                                    data-presence-text
+                                    data-user-id="{{ $invitation->user->id }}">
+                                    @if($invitation->user->is_online)
+                                        <i class="bi bi-circle-fill" style="font-size:6px"></i> En ligne
+                                    @elseif($invitation->user->last_seen_at)
+                                        Vu {{ $invitation->user->last_seen_at->diffForHumans() }}
+                                    @else
+                                        Hors ligne
+                                    @endif
+                                </small>
+                                <br>
                                 @if($invitation->user->profile)
                                     <small class="text-muted"><i class="bi bi-briefcase-fill me-1"></i>{{ $invitation->user->profile->specialite ?? 'No speciality' }}</small>
                                 @endif
@@ -110,11 +123,18 @@
                             <div class="flex-grow-1">
                                 <h6 class="fw-bold mb-0">{{ $friendUser->name }} {{ $friendUser->prenom ?? '' }}</h6>
                                 <p class="text-secondary small mb-0">{{ $friendUser->email }}</p>
-                                @if($friendUser->is_online)
-                                    <small class="text-success"><i class="bi bi-circle-fill" style="font-size:6px"></i> En ligne</small>
-                                @elseif($friendUser->last_seen_at)
-                                    <small class="text-muted">Vu {{ $friendUser->last_seen_at->diffForHumans() }}</small>
-                                @endif
+                                <small
+                                    class="{{ $friendUser->is_online ? 'text-success' : 'text-muted' }}"
+                                    data-presence-text
+                                    data-user-id="{{ $friendUser->id }}">
+                                    @if($friendUser->is_online)
+                                        <i class="bi bi-circle-fill" style="font-size:6px"></i> En ligne
+                                    @elseif($friendUser->last_seen_at)
+                                        Vu {{ $friendUser->last_seen_at->diffForHumans() }}
+                                    @else
+                                        Hors ligne
+                                    @endif
+                                </small>
                             </div>
                             <div class="d-flex gap-2">
                                 <form action="{{ route('conversations.store') }}" method="POST" class="d-inline">
@@ -151,4 +171,49 @@
             </div>
         </div>
     </div>
+
+    @section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            window.addEventListener('talentia:user-status-changed', (event) => {
+                const data = event.detail || {};
+                const userId = Number(data.user_id || 0);
+
+                if (!userId) {
+                    return;
+                }
+
+                document.querySelectorAll('[data-presence-text][data-user-id="' + userId + '"]')
+                    .forEach((element) => {
+                        if (data.is_online) {
+                            element.classList.remove('text-muted');
+                            element.classList.add('text-success');
+                            element.innerHTML = '<i class="bi bi-circle-fill" style="font-size:6px"></i> En ligne';
+                            return;
+                        }
+
+                        element.classList.remove('text-success');
+                        element.classList.add('text-muted');
+                        element.textContent = formatOfflineText(data.last_seen_at);
+                    });
+            });
+
+            function formatOfflineText(lastSeenAt) {
+                if (!lastSeenAt) {
+                    return 'Hors ligne';
+                }
+
+                const date = new Date(lastSeenAt);
+                if (Number.isNaN(date.getTime())) {
+                    return 'Hors ligne';
+                }
+
+                return 'Vu a ' + date.toLocaleTimeString('fr-FR', {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                });
+            }
+        });
+    </script>
+    @endsection
 </x-master>

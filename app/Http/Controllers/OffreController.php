@@ -7,6 +7,8 @@ use App\Models\Offre;
 use App\Models\Application;
 use App\Events\NewNotification;
 use App\Notifications\ApplicationStatusNotification;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class OffreController extends Controller
 {
@@ -101,7 +103,7 @@ class OffreController extends Controller
 
         // Broadcast real-time notification
         $statusText = $request->status === 'accepted' ? 'acceptée' : 'refusée';
-        broadcast(new NewNotification(
+        $this->broadcastSafely(new NewNotification(
             $candidate->id,
             'application_status',
             [
@@ -112,5 +114,17 @@ class OffreController extends Controller
         ));
 
         return back()->with('success', 'Statut de la candidature mis à jour.');
+    }
+
+    private function broadcastSafely(object $event): void
+    {
+        try {
+            broadcast($event);
+        } catch (Throwable $exception) {
+            Log::warning('Real-time broadcast failed on offer update', [
+                'event' => $event::class,
+                'message' => $exception->getMessage(),
+            ]);
+        }
     }
 }

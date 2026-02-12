@@ -70,35 +70,119 @@
 
     @auth
     <script>
-        // Real-time notification system
         document.addEventListener('DOMContentLoaded', function() {
-            const userId = document.querySelector('meta[name="user-id"]')?.content;
-            if (!userId || typeof window.Echo === 'undefined') return;
+            const userId = Number(document.querySelector('meta[name="user-id"]')?.content || 0);
 
-            // Listen for notifications on private channel
+            window.updateNotificationBadge = updateNotificationBadge;
+            window.updateMessageBadge = updateMessageBadge;
+            window.getRealtimeSocketId = getRealtimeSocketId;
+
+            if (!userId) {
+                return;
+            }
+
+            updateNotificationBadge();
+            updateMessageBadge();
+            setInterval(updateNotificationBadge, 8000);
+            setInterval(updateMessageBadge, 8000);
+
+            if (typeof window.Echo === 'undefined') {
+                return;
+            }
+
             window.Echo.private('notifications.' + userId)
-                .listen('.new.notification', (data) => {
-                    // Show toast
-                    showToast(data.data.message, data.type);
-                    // Update notification badge
-                    updateNotificationBadge();
-                    // Update message badge if it's a message notification
-                    if (data.type === 'new_message') {
-                        updateMessageBadge();
+                .listen('.new.notification', (payload) => {
+                    const notificationPayload = payload || {};
+                    const data = notificationPayload.data || {};
+
+                    if (!data.silent && data.message) {
+                        showToast(data.message, notificationPayload.type);
                     }
+
+                    updateNotificationBadge();
+                    updateMessageBadge();
+
+                    window.dispatchEvent(new CustomEvent('talentia:notification', {
+                        detail: notificationPayload,
+                    }));
                 });
 
-            // Listen for user status changes
-            window.Echo.channel('online')
-                .listen('.user.status', (data) => {
-                    // Update all online indicators for this user
-                    document.querySelectorAll('[data-user-id="' + data.user_id + '"] .online-indicator')
-                        .forEach(el => {
-                            el.classList.toggle('online', data.is_online);
-                            el.classList.toggle('offline', !data.is_online);
-                        });
-                });
+            subscribeToPresenceChannel();
         });
+
+        function getRealtimeSocketId() {
+            if (typeof window.Echo === 'undefined' || typeof window.Echo.socketId !== 'function') {
+                return null;
+            }
+
+            return window.Echo.socketId() || null;
+        }
+
+        function subscribeToPresenceChannel() {
+            if (typeof window.Echo === 'undefined') {
+                return;
+            }
+
+            if (typeof window.Echo.join === 'function') {
+                window.Echo.join('online')
+                    .here((users) => {
+                        (users || []).forEach((presenceUser) => {
+                            applyUserStatusChange({
+                                user_id: Number(presenceUser.id),
+                                is_online: true,
+                                last_seen_at: null,
+                            });
+                        });
+                    })
+                    .joining((presenceUser) => {
+                        applyUserStatusChange({
+                            user_id: Number(presenceUser.id),
+                            is_online: true,
+                            last_seen_at: null,
+                        });
+                    })
+                    .leaving((presenceUser) => {
+                        applyUserStatusChange({
+                            user_id: Number(presenceUser.id),
+                            is_online: false,
+                            last_seen_at: new Date().toISOString(),
+                        });
+                    })
+                    .listen('.user.status', applyUserStatusChange);
+
+                return;
+            }
+
+            window.Echo.channel('online').listen('.user.status', applyUserStatusChange);
+        }
+
+        function applyUserStatusChange(payload) {
+            const userId = Number(payload?.user_id);
+
+            if (!userId) {
+                return;
+            }
+
+            const isOnline = Boolean(payload?.is_online);
+            const selectors = [
+                '.online-indicator[data-user-id="' + userId + '"]',
+                '[data-user-id="' + userId + '"] .online-indicator',
+                '[data-user-id="' + userId + '"].online-indicator',
+            ];
+
+            document.querySelectorAll(selectors.join(', ')).forEach((indicator) => {
+                indicator.classList.toggle('online', isOnline);
+                indicator.classList.toggle('offline', !isOnline);
+            });
+
+            window.dispatchEvent(new CustomEvent('talentia:user-status-changed', {
+                detail: {
+                    user_id: userId,
+                    is_online: isOnline,
+                    last_seen_at: payload?.last_seen_at || null,
+                },
+            }));
+        }
 
         function showToast(message, type = 'message') {
             const container = document.getElementById('toast-container');
@@ -141,7 +225,11 @@
         }
 
         function updateNotificationBadge() {
-            fetch('/notifications/unread-count')
+            fetch('/notifications/unread-count', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
                 .then(r => r.json())
                 .then(data => {
                     const badge = document.getElementById('notification-badge');
@@ -149,11 +237,16 @@
                         badge.textContent = data.count;
                         badge.style.display = data.count > 0 ? 'inline-block' : 'none';
                     }
-                });
+                })
+                .catch(() => {});
         }
 
         function updateMessageBadge() {
-            fetch('/messages/unread-count')
+            fetch('/messages/unread-count', {
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest',
+                },
+            })
                 .then(r => r.json())
                 .then(data => {
                     const badge = document.getElementById('message-badge');
@@ -161,7 +254,8 @@
                         badge.textContent = data.count;
                         badge.style.display = data.count > 0 ? 'inline-block' : 'none';
                     }
-                });
+                })
+                .catch(() => {});
         }
     </script>
     @endauth

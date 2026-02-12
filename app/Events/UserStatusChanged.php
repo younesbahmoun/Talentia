@@ -2,14 +2,13 @@
 
 namespace App\Events;
 
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserStatusChanged implements ShouldBroadcast
+class UserStatusChanged implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -27,7 +26,7 @@ class UserStatusChanged implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new Channel('online'),
+            new PresenceChannel('online'),
         ];
     }
 

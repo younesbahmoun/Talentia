@@ -75,6 +75,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/messages', [MessageController::class, 'store'])->name('messages.store');
     Route::post('/messages/upload', [MessageController::class, 'uploadFile'])->name('messages.upload');
+    Route::get('/messages/{conversation}/latest', [MessageController::class, 'latest'])->whereNumber('conversation')->name('messages.latest');
     Route::post('/messages/{conversation}/read', [MessageController::class, 'markAsRead'])->name('messages.read');
     Route::get('/messages/unread-count', [MessageController::class, 'unreadCount'])->name('messages.unread-count');
 });
