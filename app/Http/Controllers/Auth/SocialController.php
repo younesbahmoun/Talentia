@@ -21,9 +21,12 @@ class SocialController extends Controller
             return redirect()->route('login');
         }
         // stocker les info dans session au lieu de crrer 
-        $socialUser = Socialite::driver($provider)->user();
+        // $socialUser = Socialite::driver($provider)->user();
+        $socialUser = Socialite::driver($provider)->stateless()->user();
+
 
         $user = User::where('email', $socialUser->getEmail())->first();
+        // si user deja authentifier
         if ($user) {
             Auth::login($user);
             if ($user->role !== null) {
@@ -31,7 +34,7 @@ class SocialController extends Controller
             }
             return redirect()->route('profile.complete');
         }
-
+        // sinon
         session([
             'social_user' => [
                 'email' => $socialUser->getEmail(),
