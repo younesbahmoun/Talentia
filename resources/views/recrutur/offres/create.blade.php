@@ -113,7 +113,7 @@
                 </x-alert>
             @endunless
             
-            <form id="offreForm" method="POST" action="">
+            <form id="offreForm" method="POST" action="{{ route('offres.store') }}">
                 @csrf
                 
                 <!-- Titre -->

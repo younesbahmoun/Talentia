@@ -13,8 +13,8 @@ class OffreController extends Controller
         return view('offres.index', compact('offres'));
     }
 
-    public function show(Request $request) {
-        $offres = Offre::find($request->id);
+    public function show($id) {
+        $offres = Offre::findOrFail($id);
         return view('offres.detail', compact('offres'));
     }
 
