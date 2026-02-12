@@ -39,7 +39,7 @@ class UserController extends Controller
             'status' => 'pending',
         ]);
 
-        $request->session()->flash('success', 'User created successfully!');
+        $request->session()->flash('success', 'send invitation successfully!');
         return redirect()->route('profiles.all');
         // return back()->with('success', 'Demande d\'ami envoyée avec succès.');
     }

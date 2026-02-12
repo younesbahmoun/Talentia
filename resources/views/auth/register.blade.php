@@ -1,87 +1,127 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
-        @csrf
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
 
-        <!-- Name -->
-        <div>
-            <x-input-label for="name" :value="__('Name')" />
-            <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
-            <x-input-error :messages="$errors->get('name')" class="mt-2" />
+<div class="min-h-screen flex items-center justify-center px-4">
+    <div class="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+
+        <h2 class="text-2xl font-bold text-center text-gray-800 mb-6">
+            Créer un compte
+        </h2>
+
+        <form method="POST" action="{{ route('register') }}" class="space-y-5">
+            @csrf
+
+            <!-- Name -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Nom</label>
+                <input type="text" name="name" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Votre nom">
+            </div>
+
+            <!-- Prenom -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Prénom</label>
+                <input type="text" name="prenom" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Votre prénom">
+            </div>
+
+            <!-- Role -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Rôle</label>
+                <select name="role" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none">
+                    <option value="candidat">Candidat</option>
+                    <option value="recruteur">Recruteur</option>
+                </select>
+            </div>
+
+            <!-- Specialite -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Spécialité</label>
+                <input type="text" name="specialite"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Ex: Développeur Web">
+            </div>
+
+            <!-- Photo -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Photo (URL)</label>
+                <input type="text" name="photo"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Lien de votre photo">
+            </div>
+
+            <!-- Bio -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                <textarea name="bio" rows="3"
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Parlez un peu de vous..."></textarea>
+            </div>
+
+            <!-- Email -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                <input type="email" name="email" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="exemple@email.com">
+            </div>
+
+            <!-- Password -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Mot de passe</label>
+                <input type="password" name="password" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Votre mot de passe">
+            </div>
+
+            <!-- Confirm Password -->
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Confirmer mot de passe</label>
+                <input type="password" name="password_confirmation" required
+                    class="w-full border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                    placeholder="Confirmez votre mot de passe">
+            </div>
+
+            <!-- Button -->
+            <div>
+                <button type="submit"
+                    class="w-full bg-blue-600 text-white py-2 rounded-lg font-semibold hover:bg-blue-700 transition duration-300">
+                    S'inscrire
+                </button>
+            </div>
+
+        </form>
+
+        <!-- Social login -->
+        <div class="mt-6 text-center">
+            <p class="text-sm text-gray-600 mb-3">Ou inscrivez-vous avec</p>
+            <div class="flex justify-center gap-4">
+                <a href="{{ route('social.redirect', 'google') }}"
+                   class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition duration-300">
+                   Google
+                </a>
+                <a href="{{ route('social.redirect', 'github') }}"
+                   class="px-4 py-2 bg-gray-800 text-white rounded-lg hover:bg-gray-900 transition duration-300">
+                   GitHub
+                </a>
+            </div>
         </div>
 
-        <!-- Prenom -->
-        <div>
-            <x-input-label for="prenom" :value="__('Prenom')" />
-            <x-text-input id="prenom" class="block mt-1 w-full" type="text" name="prenom" :value="old('prenom')" required autofocus autocomplete="prenom" />
-            <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
-        </div>
+        <p class="mt-4 text-center text-sm text-gray-600">
+            Déjà inscrit ? <a href="{{ route('login') }}" class="text-blue-600 hover:underline">Se connecter</a>
+        </p>
 
-        <!-- Role -->
-        <div>
-            <x-input-label for="role" :value="__('Role')" />
-            <x-text-input id="role" class="block mt-1 w-full" type="text" name="role" :value="old('role')" required autofocus autocomplete="role" />
-            <x-input-error :messages="$errors->get('role')" class="mt-2" />
-        </div>
+    </div>
+</div>
 
-        <!-- Specialite -->
-        <div>
-            <x-input-label for="specialite" :value="__('Specialite')" />
-            <x-text-input id="specialite" class="block mt-1 w-full" type="text" name="specialite" :value="old('specialite')" required autofocus autocomplete="specialite" />
-            <x-input-error :messages="$errors->get('specialite')" class="mt-2" />
-        </div>
-
-        <!-- Photo -->
-        <div>
-            <x-input-label for="photo" :value="__('Photo')" />
-            <x-text-input id="photo" class="block mt-1 w-full" type="text" name="photo" :value="old('photo')" required autofocus autocomplete="photo" />
-            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
-        </div>
-
-        <!-- Bio -->
-        <div>
-            <x-input-label for="bio" :value="__('Bio')" />
-            <x-text-input id="bio" class="block mt-1 w-full" type="text" name="bio" :value="old('bio')" required autofocus autocomplete="bio" />
-            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
-        </div>
-
-        <!-- Email Address -->
-        <div class="mt-4">
-            <x-input-label for="email" :value="__('Email')" />
-            <x-text-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')" required autocomplete="username" />
-            <x-input-error :messages="$errors->get('email')" class="mt-2" />
-        </div>
-
-        <!-- Password -->
-        <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
-
-            <x-text-input id="password" class="block mt-1 w-full"
-                            type="password"
-                            name="password"
-                            required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password')" class="mt-2" />
-        </div>
-
-        <!-- Confirm Password -->
-        <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
-
-            <x-text-input id="password_confirmation" class="block mt-1 w-full"
-                            type="password"
-                            name="password_confirmation" required autocomplete="new-password" />
-
-            <x-input-error :messages="$errors->get('password_confirmation')" class="mt-2" />
-        </div>
-
-        <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
-            </a>
-
-            <x-primary-button class="ms-4">
-                {{ __('Register') }}
-            </x-primary-button>
-        </div>
-    </form>
-</x-guest-layout>
+</body>
+</html>
