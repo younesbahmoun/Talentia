@@ -1,0 +1,17 @@
+﻿
+   PASS  Tests\Feature\ConversationTest
+  Γ£ô authenticatedΓÇª 1.70s  
+  Γ£ô conversationΓÇª  0.11s  
+  Γ£ô user can starΓÇª 0.08s  
+  Γ£ô user cannot sΓÇª 0.07s  
+  Γ£ô user cannot sΓÇª 0.07s  
+  Γ£ô user cannot sΓÇª 0.05s  
+  Γ£ô user can viewΓÇª 0.08s  
+  Γ£ô user cannot vΓÇª 0.08s  
+  Γ£ô conversationΓÇª  0.10s  
+  Γ£ô viewing conveΓÇª 0.08s  
+  Γ£ô unauthenticatΓÇª 0.05s  
+
+  Tests:    11 passed (19 assertions)
+  Duration: 2.84s
+

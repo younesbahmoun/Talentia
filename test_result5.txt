@@ -1,0 +1,14 @@
+﻿
+   PASS  Tests\Feature\UnreadMessageTest
+  Γ£ô new message iΓÇª 1.01s  
+  Γ£ô multiple unreΓÇª 0.08s  
+  Γ£ô read messagesΓÇª 0.06s  
+  Γ£ô user own messΓÇª 0.06s  
+  Γ£ô per conversatΓÇª 0.06s  
+  Γ£ô marking messaΓÇª 0.06s  
+  Γ£ô unread countΓÇª  0.18s  
+  Γ£ô conversationΓÇª  0.15s  
+
+  Tests:    8 passed (10 assertions)
+  Duration: 2.02s
+

@@ -4,44 +4,34 @@
 
         <!-- Name -->
         <div>
-            <x-input-label for="name" :value="__('Name')" />
+            <x-input-label for="name" :value="__('Nom')" />
             <x-text-input id="name" class="block mt-1 w-full" type="text" name="name" :value="old('name')" required autofocus autocomplete="name" />
             <x-input-error :messages="$errors->get('name')" class="mt-2" />
         </div>
 
         <!-- Prenom -->
-        <div>
-            <x-input-label for="prenom" :value="__('Prenom')" />
-            <x-text-input id="prenom" class="block mt-1 w-full" type="text" name="prenom" :value="old('prenom')" required autofocus autocomplete="prenom" />
+        <div class="mt-4">
+            <x-input-label for="prenom" :value="__('Prénom')" />
+            <x-text-input id="prenom" class="block mt-1 w-full" type="text" name="prenom" :value="old('prenom')" required autocomplete="given-name" />
             <x-input-error :messages="$errors->get('prenom')" class="mt-2" />
         </div>
 
         <!-- Role -->
-        <div>
-            <x-input-label for="role" :value="__('Role')" />
-            <x-text-input id="role" class="block mt-1 w-full" type="text" name="role" :value="old('role')" required autofocus autocomplete="role" />
+        <div class="mt-4">
+            <x-input-label for="role" :value="__('Rôle')" />
+            <select id="role" name="role" class="block mt-1 w-full border-gray-300 dark:border-gray-700 dark:bg-gray-900 dark:text-gray-300 focus:border-indigo-500 dark:focus:border-indigo-600 focus:ring-indigo-500 dark:focus:ring-indigo-600 rounded-md shadow-sm" required>
+                <option value="">-- Sélectionnez --</option>
+                <option value="candidat" {{ old('role') == 'candidat' ? 'selected' : '' }}>Candidat</option>
+                <option value="recruteur" {{ old('role') == 'recruteur' ? 'selected' : '' }}>Recruteur</option>
+            </select>
             <x-input-error :messages="$errors->get('role')" class="mt-2" />
         </div>
 
         <!-- Specialite -->
-        <div>
-            <x-input-label for="specialite" :value="__('Specialite')" />
-            <x-text-input id="specialite" class="block mt-1 w-full" type="text" name="specialite" :value="old('specialite')" required autofocus autocomplete="specialite" />
+        <div class="mt-4">
+            <x-input-label for="specialite" :value="__('Spécialité')" />
+            <x-text-input id="specialite" class="block mt-1 w-full" type="text" name="specialite" :value="old('specialite')" placeholder="Ex: Développeur PHP, Designer UX..." autocomplete="organization-title" />
             <x-input-error :messages="$errors->get('specialite')" class="mt-2" />
-        </div>
-
-        <!-- Photo -->
-        <div>
-            <x-input-label for="photo" :value="__('Photo')" />
-            <x-text-input id="photo" class="block mt-1 w-full" type="text" name="photo" :value="old('photo')" required autofocus autocomplete="photo" />
-            <x-input-error :messages="$errors->get('photo')" class="mt-2" />
-        </div>
-
-        <!-- Bio -->
-        <div>
-            <x-input-label for="bio" :value="__('Bio')" />
-            <x-text-input id="bio" class="block mt-1 w-full" type="text" name="bio" :value="old('bio')" required autofocus autocomplete="bio" />
-            <x-input-error :messages="$errors->get('bio')" class="mt-2" />
         </div>
 
         <!-- Email Address -->
@@ -53,7 +43,7 @@
 
         <!-- Password -->
         <div class="mt-4">
-            <x-input-label for="password" :value="__('Password')" />
+            <x-input-label for="password" :value="__('Mot de passe')" />
 
             <x-text-input id="password" class="block mt-1 w-full"
                             type="password"
@@ -65,7 +55,7 @@
 
         <!-- Confirm Password -->
         <div class="mt-4">
-            <x-input-label for="password_confirmation" :value="__('Confirm Password')" />
+            <x-input-label for="password_confirmation" :value="__('Confirmer le mot de passe')" />
 
             <x-text-input id="password_confirmation" class="block mt-1 w-full"
                             type="password"
@@ -76,11 +66,11 @@
 
         <div class="flex items-center justify-end mt-4">
             <a class="underline text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800" href="{{ route('login') }}">
-                {{ __('Already registered?') }}
+                {{ __('Déjà inscrit ?') }}
             </a>
 
             <x-primary-button class="ms-4">
-                {{ __('Register') }}
+                {{ __('S\'inscrire') }}
             </x-primary-button>
         </div>
     </form>

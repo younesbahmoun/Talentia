@@ -1,43 +1,137 @@
-<x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-            {{ __('Notifications') }}
+<x-master title="Notifications">
+    <div class="container my-5">
+        <h2 class="fw-bold mb-4">
+            <i class="bi bi-bell text-primary"></i> Notifications
         </h2>
-    </x-slot>
 
-    <div class="py-12">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg">
-                <div class="p-6 text-gray-900 dark:text-gray-100">
-                    <div class="list-group list-group-flush">
-                        @forelse($notifications as $notification)
-                            <div class="flex items-center p-4 border-b border-gray-200 dark:border-gray-700 {{ $notification->read_at ? '' : 'bg-gray-50 dark:bg-gray-700' }}">
-                                <div class="mr-4 text-primary">
-                                    <i class="bi bi-person-plus-fill fs-4"></i>
-                                </div>
-                                <div class="flex-grow">
-                                    <p class="mb-1 text-sm font-medium text-gray-900 dark:text-white">
-                                        {{ $notification->data['message'] ?? 'Nouvelle notification' }}
-                                    </p>
-                                    <small class="text-xs text-gray-500 dark:text-gray-400">
-                                        {{ $notification->created_at->diffForHumans() }}
-                                    </small>
-                                </div>
-                                @if(isset($notification->data['sender_id']))
-                                    <a href="{{ route('profile.detail', $notification->data['sender_id']) }}" class="text-sm font-medium text-blue-600 hover:text-blue-500">
+        <div class="card shadow-sm border-0">
+            <div class="card-body">
+                <div class="list-group list-group-flush" id="notifications-list">
+                    @forelse($notifications as $notification)
+                        <div class="list-group-item d-flex align-items-center px-0 py-3 {{ $notification->read_at ? '' : 'bg-light' }}">
+                            <div class="me-3 text-primary">
+                                @php
+                                    $type = $notification->data['type'] ?? 'default';
+                                    $iconMap = [
+                                        'friend_request' => 'bi-person-plus-fill text-success',
+                                        'new_message' => 'bi-chat-dots-fill text-primary',
+                                        'application_status' => 'bi-briefcase-fill text-warning',
+                                        'default' => 'bi-bell-fill text-primary',
+                                    ];
+                                    $icon = $iconMap[$type] ?? $iconMap['default'];
+                                @endphp
+                                <i class="bi {{ $icon }} fs-4"></i>
+                            </div>
+                            <div class="flex-grow-1">
+                                <p class="mb-1 fw-medium">
+                                    {{ $notification->data['message'] ?? 'Nouvelle notification' }}
+                                </p>
+                                <small class="text-muted">
+                                    {{ $notification->created_at->diffForHumans() }}
+                                </small>
+                            </div>
+                            <div>
+                                @if($type === 'friend_request' && isset($notification->data['sender_id']))
+                                    <a href="{{ route('profile.detail', $notification->data['sender_id']) }}" class="btn btn-sm btn-outline-primary">
                                         Voir le profil
+                                    </a>
+                                @elseif($type === 'new_message' && isset($notification->data['conversation_id']))
+                                    <a href="{{ route('conversations.show', $notification->data['conversation_id']) }}" class="btn btn-sm btn-outline-primary">
+                                        <i class="bi bi-chat me-1"></i>Voir
+                                    </a>
+                                @elseif($type === 'application_status' && isset($notification->data['offre_id']))
+                                    <a href="{{ route('offres.detail', $notification->data['offre_id']) }}" class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-briefcase me-1"></i>Voir l'offre
                                     </a>
                                 @endif
                             </div>
-                        @empty
-                            <div class="text-center py-5 text-gray-500 dark:text-gray-400">
-                                <i class="bi bi-bell-slash fs-1 block mb-3"></i>
-                                Aucune notification pour le moment.
-                            </div>
-                        @endforelse
-                    </div>
+                        </div>
+                    @empty
+                        <div class="text-center py-5 text-muted">
+                            <i class="bi bi-bell-slash fs-1 d-block mb-3"></i>
+                            Aucune notification pour le moment.
+                        </div>
+                    @endforelse
                 </div>
             </div>
         </div>
     </div>
-</x-app-layout>
+
+    @section('scripts')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const notificationsList = document.getElementById('notifications-list');
+            if (!notificationsList) {
+                return;
+            }
+
+            window.addEventListener('talentia:notification', (event) => {
+                const payload = event.detail || {};
+                const data = payload.data || {};
+                const type = payload.type || data.type || null;
+
+                if (!type || !data.message || data.silent) {
+                    return;
+                }
+
+                const emptyState = notificationsList.querySelector('.text-center.py-5.text-muted');
+                if (emptyState) {
+                    emptyState.remove();
+                }
+
+                const item = document.createElement('div');
+                item.className = 'list-group-item d-flex align-items-center px-0 py-3 bg-light';
+
+                const iconClass = getIconClass(type);
+                item.innerHTML =
+                    '<div class="me-3 text-primary">' +
+                        '<i class="bi ' + iconClass + ' fs-4"></i>' +
+                    '</div>' +
+                    '<div class="flex-grow-1">' +
+                        '<p class="mb-1 fw-medium">' + escapeHtml(data.message) + '</p>' +
+                        '<small class="text-muted">A l\'instant</small>' +
+                    '</div>' +
+                    '<div>' + buildActionButton(type, data) + '</div>';
+
+                notificationsList.prepend(item);
+
+                if (typeof window.updateNotificationBadge === 'function') {
+                    window.updateNotificationBadge();
+                }
+            });
+
+            function getIconClass(type) {
+                const iconMap = {
+                    friend_request: 'bi-person-plus-fill text-success',
+                    new_message: 'bi-chat-dots-fill text-primary',
+                    application_status: 'bi-briefcase-fill text-warning',
+                };
+
+                return iconMap[type] || 'bi-bell-fill text-primary';
+            }
+
+            function buildActionButton(type, data) {
+                if (type === 'friend_request' && data.sender_id) {
+                    return '<a href="/profiles/' + Number(data.sender_id) + '" class="btn btn-sm btn-outline-primary">Voir le profil</a>';
+                }
+
+                if (type === 'new_message' && data.conversation_id) {
+                    return '<a href="/conversations/' + Number(data.conversation_id) + '" class="btn btn-sm btn-outline-primary"><i class="bi bi-chat me-1"></i>Voir</a>';
+                }
+
+                if (type === 'application_status' && data.offre_id) {
+                    return '<a href="/offres/detail/' + Number(data.offre_id) + '" class="btn btn-sm btn-outline-warning"><i class="bi bi-briefcase me-1"></i>Voir l\'offre</a>';
+                }
+
+                return '';
+            }
+
+            function escapeHtml(value) {
+                const div = document.createElement('div');
+                div.textContent = value || '';
+                return div.innerHTML;
+            }
+        });
+    </script>
+    @endsection
+</x-master>

@@ -1,0 +1,28 @@
+﻿
+   PASS  Tests\Feature\MessageTest
+  Γ£ô user can sendΓÇª 1.39s  
+  Γ£ô sending messaΓÇª 0.08s  
+  Γ£ô user cannot sΓÇª 0.12s  
+  Γ£ô message bodyΓÇª  0.07s  
+  Γ£ô user can uploΓÇª 0.20s  
+  Γ£ô user can uploΓÇª 0.09s  
+  Γ£ô file upload rΓÇª 0.09s  
+  Γ£ô mark messagesΓÇª 0.09s  
+  Γ£ô mark as readΓÇª  0.07s  
+  Γ£ô unread countΓÇª  0.08s  
+  Γ£ô unread countΓÇª  0.06s  
+  Γ£ô sending messaΓÇª 0.07s  
+
+   PASS  Tests\Feature\UnreadMessageTest
+  Γ£ô new message iΓÇª 0.08s  
+  Γ£ô multiple unreΓÇª 0.08s  
+  Γ£ô read messagesΓÇª 0.06s  
+  Γ£ô user own messΓÇª 0.06s  
+  Γ£ô per conversatΓÇª 0.06s  
+  Γ£ô marking messaΓÇª 0.06s  
+  Γ£ô unread countΓÇª  0.07s  
+  Γ£ô conversationΓÇª  0.14s  
+
+  Tests:    20 passed (28 assertions)
+  Duration: 3.43s
+

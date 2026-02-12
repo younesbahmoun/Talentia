@@ -1,5 +1,5 @@
 <x-master title="All User Profiles">
-    @section('style')
+    @section('styles')
         <style>
             .profile-img {
                 width: 120px;
@@ -147,7 +147,5 @@
             // });
         </script>
     @endsection
-    @section('footer')
-        @include('components.footer')
-    @endsection
+
 </x-master>

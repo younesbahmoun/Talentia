@@ -1,0 +1,13 @@
+﻿
+   PASS  Tests\Feature\NotificationTest
+  Γ£ô friend requesΓÇª 1.19s  
+  Γ£ô friend requesΓÇª 0.08s  
+  Γ£ô friend acceptΓÇª 0.07s  
+  Γ£ô message creatΓÇª 0.10s  
+  Γ£ô unread notifiΓÇª 0.09s  
+  Γ£ô viewing notifΓÇª 1.49s  
+  Γ£ô notificationΓÇª  0.06s  
+
+  Tests:    7 passed (9 assertions)
+  Duration: 3.47s
+

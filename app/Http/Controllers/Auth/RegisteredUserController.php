@@ -33,9 +33,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'prenom' => ['required', 'string', 'max:255'],
             'role' => 'required|in:candidat,recruteur',
-            'specialite' => ['required', 'string', 'max:255'],
-            'photo' => ['required', 'string', 'max:255'],
-            'bio' => ['required', 'string', 'max:255'],
+            'specialite' => ['nullable', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
@@ -44,11 +42,11 @@ class RegisteredUserController extends Controller
             'name' => $request->name,
             'prenom' => $request->prenom,
             'role' => $request->role,
-            'specialite' => $request->specialite,
-            'photo' => $request->photo,
-            'bio' => $request->bio,
+            'specialite' => $request->specialite ?? '',
+            'photo' => '',
+            'bio' => '',
             'email' => $request->email,
-            'password' => Hash::make($request->password),
+            'password' => $request->password,
         ]);
 
         $user->assignRole($request->role);
