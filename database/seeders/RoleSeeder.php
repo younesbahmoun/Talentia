@@ -17,6 +17,8 @@ class RoleSeeder extends Seeder
         $candidat = Role::create(['name' => 'candidat']);
         $recruteur = Role::create(['name' => 'recruteur']);
 
+        $premium = Role::create(['name' => 'premium']);
+
         // Optionnel : Créer des permissions spécifiques
         $permissions = [
             'postuler à une offre',

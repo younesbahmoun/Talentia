@@ -58,12 +58,23 @@
             </div>
         </div>
 
-        {{-- alert success --}}
-        @unless(!session('success'))
-            <x-alert :type="'success'">
-                <p>{{ session('success') }}</p>
-            </x-alert>
-        @endunless
+        
+            
+            
+            
+            @if(session('success'))
+                <div id="autoAlert">
+                    <x-alert type="success">
+                        {{ session('success') }}
+                    </x-alert>
+                </div>
+            @endif
+
+
+
+
+
+
 
         <!-- Profiles Grid -->
         <div class="row g-4">
@@ -145,6 +156,19 @@
             //         });
             //     });
             // });
+
+        document.addEventListener("DOMContentLoaded", function () {
+            let alertBox = document.getElementById('autoAlert');
+            if (alertBox) {
+                setTimeout(function () {
+                    alertBox.style.transition = "opacity 0.5s ease";
+                    alertBox.style.opacity = "0";
+                    setTimeout(() => alertBox.remove(), 500);
+                }, 5000); // 5 seconds
+            }
+        });
+
+
         </script>
     @endsection
 

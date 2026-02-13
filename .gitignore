@@ -30,6 +30,8 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+composer.json
+composer.lock
 
 # OS
 # .DS_Store

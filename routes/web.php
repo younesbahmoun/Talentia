@@ -14,6 +14,10 @@ use Illuminate\Support\Facades\Route;
 | Dashboard (Home)
 |--------------------------------------------------------------------------
 */
+use App\Http\Controllers\Auth\SocialController;//github & google
+
+use App\Http\Controllers\TaskController;
+
 Route::get('/', function () {
     return view('utilisateur/dashboard', [
         'currentPage' => 'dashboard',
@@ -94,3 +98,17 @@ Route::get('/recruiter/candidats', [OffreController::class, 'candidats'])->name(
 Route::post('/applications/{application}/status', [OffreController::class, 'updateApplicationStatus'])->name('applications.update-status')->middleware(['auth', 'verified', 'role:recruteur']);
 
 require __DIR__.'/auth.php';
+
+
+
+// les routes des authentification google & github
+// pour completer le profil
+Route::get('/profile/complete', [UserController::class, 'completeProfile'])->name('profile.complete');
+Route::post('/profile/complete', [UserController::class, 'saveProfile'])->name('profile.save');
+// pour google
+Route::get('/auth/{provider}/redirect', [SocialController::class, 'redirect'])->name('social.redirect');
+Route::get('/auth/{provider}/callback', [SocialController::class, 'callback'])->name('social.callback');
+
+
+
+
